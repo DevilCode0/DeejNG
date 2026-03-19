@@ -6,6 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using DeejNG.Models;
 using NAudio.CoreAudioApi;
 
@@ -134,6 +137,25 @@ namespace DeejNG.Dialogs
         {
             DialogResult = false;
             Close();
+        }
+
+        private static ImageSource? GetProcessIcon(string exePath)
+        {
+            try
+            {
+                using var icon = System.Drawing.Icon.ExtractAssociatedIcon(exePath);
+                if (icon == null) return null;
+                var bitmapSource = Imaging.CreateBitmapSourceFromHIcon(
+                    icon.Handle,
+                    Int32Rect.Empty,
+                    BitmapSizeOptions.FromEmptyOptions());
+                bitmapSource.Freeze();
+                return bitmapSource;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private void TitleBar_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -326,11 +348,13 @@ namespace DeejNG.Dialogs
                         }
 
                         string friendlyName = "";
+                        string? exePath = null;
 
                         try
                         {
                             // Try to extract the executable file name (without extension)
-                            friendlyName = Path.GetFileNameWithoutExtension(process.MainModule.FileName);
+                            exePath = process.MainModule?.FileName;
+                            friendlyName = Path.GetFileNameWithoutExtension(exePath);
                         }
                         catch
                         {
@@ -341,12 +365,14 @@ namespace DeejNG.Dialogs
                         // Add the session only if it hasn't already been added and has a name
                         if (!string.IsNullOrWhiteSpace(friendlyName) && !seenProcesses.Contains(friendlyName))
                         {
+                            var appIcon = exePath != null ? GetProcessIcon(exePath) : null;
                             var newSession = new SelectableSession
                             {
                                 Id = friendlyName.ToLowerInvariant(),
                                 FriendlyName = friendlyName,
                                 IsSelected = selectedNames.Contains(friendlyName.ToLowerInvariant()),
-                                IsInputDevice = false
+                                IsInputDevice = false,
+                                AppIcon = appIcon
                             };
 
                             AvailableSessions.Add(newSession);
@@ -558,6 +584,11 @@ namespace DeejNG.Dialogs
                     }
                 }
             }
+
+            /// <summary>
+            /// The application icon extracted from the process executable.
+            /// </summary>
+            public ImageSource? AppIcon { get; set; }
 
             /// <summary>
             /// Indicates whether this item represents an input device (e.g., microphone).

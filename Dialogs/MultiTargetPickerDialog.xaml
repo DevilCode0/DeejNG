@@ -126,16 +126,14 @@
                     </Style>
                 </GroupBox.Style>
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <ListBox x:Name="AvailableSessionsListBox" 
+                    <ListBox x:Name="AvailableSessionsListBox"
                              Margin="0,5"
                              Background="Transparent"
                              BorderThickness="0">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <CheckBox Content="{Binding FriendlyName}" 
-                                          IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                          IsEnabled="{Binding IsEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                          Foreground="{DynamicResource TextPrimaryBrush}"
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          IsEnabled="{Binding IsEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                           Margin="0,2">
                                     <CheckBox.Style>
                                         <Style TargetType="CheckBox">
@@ -147,6 +145,22 @@
                                             </Style.Triggers>
                                         </Style>
                                     </CheckBox.Style>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Image Source="{Binding AppIcon}" Width="16" Height="16" Margin="0,0,6,0"
+                                               VerticalAlignment="Center"
+                                               RenderOptions.BitmapScalingMode="HighQuality">
+                                            <Image.Style>
+                                                <Style TargetType="Image">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding AppIcon}" Value="{x:Null}">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Image.Style>
+                                        </Image>
+                                        <TextBlock Text="{Binding FriendlyName}" VerticalAlignment="Center"/>
+                                    </StackPanel>
                                 </CheckBox>
                             </DataTemplate>
                         </ListBox.ItemTemplate>

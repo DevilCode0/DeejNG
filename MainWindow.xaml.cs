@@ -2358,15 +2358,13 @@ namespace DeejNG
                 return; // The Connected event will stop the timer
             }
 
-            // FIX: Don't blindly connect to first available port - wait for user selection
-            // This prevents connecting to wrong devices (e.g., joysticks, other controllers)
+            // Saved port not available — auto-scan all COM ports for a DeejNG device
             try
             {
                 var availablePorts = SerialPort.GetPortNames();
 
                 if (availablePorts.Length == 0)
                 {
-
                     Dispatcher.BeginInvoke(() =>
                     {
                         ConnectionStatus.Text = "Waiting for device...";
@@ -2376,19 +2374,30 @@ namespace DeejNG
                     return;
                 }
 
-
-
-                // Update UI to prompt user to select the correct port
-                Dispatcher.BeginInvoke(() =>
+                int baudRate = _settingsManager.AppSettings.BaudRate > 0 ? _settingsManager.AppSettings.BaudRate : 9600;
+                if (_serialManager.TryAutoDetect(baudRate))
                 {
-                    ConnectionStatus.Text = $"Please select correct COM port ({availablePorts.Length} available)";
-                    ConnectionStatus.Foreground = Brushes.Orange;
-                    LoadAvailablePorts();
-                }, DispatcherPriority.Background);
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        ConnectionStatus.Text = $"Scanning {_serialManager.CurrentPort}...";
+                        ConnectionStatus.Foreground = Brushes.Orange;
+                        LoadAvailablePorts();
+                    }, DispatcherPriority.Background);
+                }
+                else
+                {
+                    // All ports tried and marked invalid — clear and retry next cycle
+                    _serialManager.ClearInvalidPorts();
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        ConnectionStatus.Text = "Scanning COM ports...";
+                        ConnectionStatus.Foreground = Brushes.Orange;
+                        LoadAvailablePorts();
+                    }, DispatcherPriority.Background);
+                }
             }
             catch (Exception ex)
             {
-
                 Dispatcher.BeginInvoke(() =>
                 {
                     ConnectionStatus.Text = "Connection failed - check ports manually";
@@ -2454,22 +2463,30 @@ namespace DeejNG
 
                 if (_serialManager.TryConnectToSavedPort(_settingsManager.AppSettings.PortName, baudRate))
                 {
-
                     attemptTimer.Stop();
                     Dispatcher.BeginInvoke(() => UpdateConnectionStatus(), DispatcherPriority.Background);
                     return;
                 }
 
+                // Saved port not found — try auto-detecting any available DeejNG device
+                if (_serialManager.TryAutoDetect(baudRate))
+                {
+                    attemptTimer.Stop();
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        ConnectionStatus.Text = $"Scanning {_serialManager.CurrentPort}...";
+                        ConnectionStatus.Foreground = Brushes.Orange;
+                    }, DispatcherPriority.Background);
+                    // Protocol validation will fire Connected/Disconnected events to finalize
+                    return;
+                }
+
                 if (connectionAttempts >= maxAttempts)
                 {
-
                     attemptTimer.Stop();
 
-                    // Start the auto-reconnect timer since initial attempts failed
-                    if (_serialManager.ShouldAttemptReconnect())
-                    {
-                        _timerCoordinator.StartSerialReconnect();
-                    }
+                    // Start the auto-reconnect timer to keep scanning
+                    _timerCoordinator.StartSerialReconnect();
 
                     Dispatcher.BeginInvoke(() => UpdateConnectionStatus(), DispatcherPriority.Background);
                     return;

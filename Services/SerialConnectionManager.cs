@@ -324,6 +324,32 @@ namespace DeejNG.Services
 
         public bool ShouldAttemptReconnect() => _serialDisconnected && !_manualDisconnect;
 
+        /// <summary>
+        /// Scans all available COM ports and attempts to connect to the first one
+        /// that hasn't been marked invalid. Protocol validation (5s timeout) will
+        /// automatically mark it invalid and trigger another reconnect cycle if it
+        /// doesn't send valid DeejNG data, causing the next port to be tried.
+        /// </summary>
+        /// <returns>True if a connection attempt was made.</returns>
+        public bool TryAutoDetect(int baudRate)
+        {
+            if (IsConnected) return true;
+
+            var available = SerialPort.GetPortNames();
+            if (available.Length == 0) return false;
+
+            foreach (var port in available)
+            {
+                if (!IsPortMarkedInvalid(port))
+                {
+                    InitSerial(port, baudRate);
+                    return IsConnected;
+                }
+            }
+
+            return false;
+        }
+
         public bool TryConnectToSavedPort(string savedPortName, int baudRate)
         {
             if (string.IsNullOrWhiteSpace(savedPortName))
@@ -349,12 +375,12 @@ namespace DeejNG.Services
                     return false;
                 }
 
-                // Clear saved port from invalid list before attempting auto-connect
-                // (it may have been marked invalid in a previous session or failed attempt)
-                if (_invalidPorts.Contains(portToTry))
+                // Skip ports that recently failed protocol validation — let auto-detect
+                // cycle through other ports instead. The invalid list clears after 2 minutes,
+                // so replugged devices will be retried automatically.
+                if (IsPortMarkedInvalid(portToTry))
                 {
-                    _invalidPorts.Remove(portToTry);
-
+                    return false;
                 }
 
                 // Reuse last configured baud rate; default to 9600 if unknown.
