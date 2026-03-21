@@ -382,7 +382,8 @@ namespace DeejNG.Dialogs
         private void ChannelControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             // Open the multi-target picker instead of the single target picker
-            var picker = new MultiTargetPickerDialog(_audioTargets)
+            var mainWin = Application.Current.MainWindow as DeejNG.MainWindow;
+            var picker = new MultiTargetPickerDialog(_audioTargets, mainWin?.VoiceMeeter)
             {
                 Owner = Application.Current.MainWindow,
                 WindowStartupLocation = WindowStartupLocation.Manual

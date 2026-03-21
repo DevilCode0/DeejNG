@@ -35,6 +35,9 @@ namespace DeejNG
 
         public List<ChannelControl> _channelControls = new();
 
+        /// <summary>Exposes VoiceMeeter service for dialogs opened by child controls.</summary>
+        public VoiceMeeterService VoiceMeeter => _voiceMeeter;
+
         #endregion Public Fields
 
         #region Private Fields
@@ -50,6 +53,7 @@ namespace DeejNG
 
         // New Manager Fields
         private readonly DeviceCacheManager _deviceManager;
+        private readonly VoiceMeeterService _voiceMeeter;
 
         // Inline mute support (triggered by 9999 value from hardware)
         private readonly HashSet<int> _inlineMutedChannels = new HashSet<int>();
@@ -152,6 +156,7 @@ namespace DeejNG
 
             // Initialize managers
             _deviceManager = new DeviceCacheManager();
+            _voiceMeeter = new VoiceMeeterService();
             _settingsManager = new AppSettingsManager();
             _profileManager = new ProfileManager(_settingsManager);
             _serialManager = new SerialConnectionManager();
@@ -567,6 +572,7 @@ namespace DeejNG
             // Dispose services
             _overlayService?.Dispose();
             _powerManagementService?.Dispose();
+            _voiceMeeter?.Dispose();
 
             // Clean up all registered event handlers
             foreach (var target in _registeredHandlers.Keys.ToList())
@@ -696,7 +702,12 @@ namespace DeejNG
             {
                 try
                 {
-                    if (target.IsInputDevice)
+                    if (target.IsVoiceMeeterBus)
+                    {
+                        _voiceMeeter.SetBusGain(target.BusIndex, level);
+                        _voiceMeeter.SetBusMute(target.BusIndex, ctrl.IsMuted);
+                    }
+                    else if (target.IsInputDevice)
                     {
                         _deviceManager.ApplyInputDeviceVolume(target.Name, level, ctrl.IsMuted);
                     }

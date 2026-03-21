@@ -109,4 +109,32 @@ Configure Buttons for Media Control or Mute
 
 ---
 
+## 🔨 Building from Source
+
+### Prerequisites
+
+- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+- Windows only (WPF application)
+- [Inno Setup 6](https://jrsoftware.org/isdl.php) *(only needed to build the installer)*
+
+### Step 1 — Publish the application
+
+```powershell
+dotnet publish DeejNG.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o ./publish
+```
+
+Output: `publish\DeejNG.exe`
+
+### Step 2 — Compile the installer *(optional)*
+
+In PowerShell:
+
+```powershell
+& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
+```
+
+Output: `installer\DeejNG-1.1.1.59-Setup.exe`
+
+---
+
 

@@ -10,6 +10,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using DeejNG.Models;
+using DeejNG.Services;
 using NAudio.CoreAudioApi;
 
 namespace DeejNG.Dialogs
@@ -23,7 +24,7 @@ namespace DeejNG.Dialogs
         /// pre-selecting any audio targets that are currently assigned.
         /// </summary>
         /// <param name="currentTargets">A list of currently selected audio targets to pre-mark as selected.</param>
-        public MultiTargetPickerDialog(List<AudioTarget> currentTargets)
+        public MultiTargetPickerDialog(List<AudioTarget> currentTargets, VoiceMeeterService voiceMeeter = null)
         {
             // Initialize the XAML UI components
             InitializeComponent();
@@ -31,7 +32,7 @@ namespace DeejNG.Dialogs
             // BUGFIX: Separate device names by type to avoid VAC devices being selected in both input and output lists
             // Build sets of names for each category based on their actual type
             HashSet<string> selectedSessions = new(
-                currentTargets.Where(t => !t.IsInputDevice && !t.IsOutputDevice)
+                currentTargets.Where(t => !t.IsInputDevice && !t.IsOutputDevice && !t.IsVoiceMeeterBus)
                     .Select(t => t.Name.ToLowerInvariant()),
                 StringComparer.OrdinalIgnoreCase);
 
@@ -45,10 +46,19 @@ namespace DeejNG.Dialogs
                     .Select(t => t.Name.ToLowerInvariant()),
                 StringComparer.OrdinalIgnoreCase);
 
+            // Pre-select any VoiceMeeter buses by their display name (e.g., "VoiceMeeter A1")
+            HashSet<string> selectedVmBuses = new(
+                currentTargets.Where(t => t.IsVoiceMeeterBus)
+                    .Select(t => t.Name.ToLowerInvariant()),
+                StringComparer.OrdinalIgnoreCase);
+
+            // Merge VoiceMeeter bus selections into the output set for pre-selection
+            foreach (var name in selectedVmBuses) selectedOutputDevices.Add(name);
+
             // Load and pre-select matching sessions, input devices, and output devices
             LoadSessions(selectedSessions);
             LoadInputDevices(selectedInputDevices);
-            LoadOutputDevices(selectedOutputDevices);
+            LoadOutputDevices(selectedOutputDevices, voiceMeeter);
 
             // Separate manually specified apps (not in sessions/devices) and pre-populate the text box
             var manuallySpecifiedApps = new List<string>();
@@ -171,7 +181,7 @@ namespace DeejNG.Dialogs
         /// and marks them as selected if they exist in the provided selection list.
         /// </summary>
         /// <param name="selectedNames">A set of names to pre-select in the list (case-insensitive).</param>
-        private void LoadOutputDevices(HashSet<string> selectedNames)
+        private void LoadOutputDevices(HashSet<string> selectedNames, VoiceMeeterService voiceMeeter = null)
         {
             try
             {
@@ -195,6 +205,26 @@ namespace DeejNG.Dialogs
 
                     // Add to the list of output devices shown in the UI
                     OutputDevices.Add(newDevice);
+                }
+
+                // If VoiceMeeter is running, add its buses as selectable output targets
+                if (voiceMeeter?.IsAvailable == true)
+                {
+                    string[] busLabels = voiceMeeter.GetBusLabels();
+                    for (int i = 0; i < busLabels.Length; i++)
+                    {
+                        string displayName = $"VoiceMeeter {busLabels[i]}";
+                        OutputDevices.Add(new SelectableSession
+                        {
+                            Id = displayName,
+                            FriendlyName = displayName,
+                            IsSelected = selectedNames.Contains(displayName.ToLowerInvariant()),
+                            IsInputDevice = false,
+                            IsOutputDevice = true,
+                            IsVoiceMeeterBus = true,
+                            BusIndex = i
+                        });
+                    }
                 }
 
                 // Sort the output devices alphabetically by name for better UX
@@ -476,12 +506,26 @@ namespace DeejNG.Dialogs
             // Add selected output devices (e.g., speakers, headphones) to the target list
             foreach (var device in OutputDevices.Where(d => d.IsSelected))
             {
-                SelectedTargets.Add(new AudioTarget
+                if (device.IsVoiceMeeterBus)
                 {
-                    Name = device.Id,
-                    IsInputDevice = false,
-                    IsOutputDevice = true
-                });
+                    SelectedTargets.Add(new AudioTarget
+                    {
+                        Name = device.Id,
+                        IsInputDevice = false,
+                        IsOutputDevice = false,
+                        IsVoiceMeeterBus = true,
+                        BusIndex = device.BusIndex
+                    });
+                }
+                else
+                {
+                    SelectedTargets.Add(new AudioTarget
+                    {
+                        Name = device.Id,
+                        IsInputDevice = false,
+                        IsOutputDevice = true
+                    });
+                }
             }
 
             // Indicate success to the calling code (e.g., via ShowDialog)
@@ -599,6 +643,12 @@ namespace DeejNG.Dialogs
             /// Indicates whether this item represents an output device (e.g., speakers).
             /// </summary>
             public bool IsOutputDevice { get; set; }
+
+            /// <summary>True when this item represents a VoiceMeeter bus (Hardware Out).</summary>
+            public bool IsVoiceMeeterBus { get; set; }
+
+            /// <summary>Zero-based VoiceMeeter Bus index (valid only when IsVoiceMeeterBus is true).</summary>
+            public int BusIndex { get; set; }
 
             /// <summary>
             /// Whether the item is currently selected (e.g., checkbox checked).

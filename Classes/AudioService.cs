@@ -48,81 +48,61 @@ namespace DeejNG.Services
         /// <param name="excludedApplications">Optional list of applications to exclude from unmapped control.</param>
         public void ApplyMuteStateToUnmappedApplications(bool isMuted, HashSet<string> mappedApplications, IEnumerable<string> excludedApplications = null)
         {
-            try
+            // Build exclusion set for efficient lookup
+            var exclusionSet = excludedApplications != null
+                ? new HashSet<string>(excludedApplications.Select(e => Path.GetFileNameWithoutExtension(e).ToLowerInvariant()))
+                : new HashSet<string>();
+
+            int processedCount = 0;
+
+            // Enumerate sessions across ALL render endpoints (includes VoiceMeeter virtual devices)
+            foreach (var session in GetAllRenderSessions())
             {
-                // Get the default audio output device (e.g., speakers)
-                var device = _deviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-
-                // Get all current audio sessions associated with that device
-                var sessions = device.AudioSessionManager.Sessions;
-
-                // Build exclusion set for efficient lookup
-                var exclusionSet = excludedApplications != null
-                    ? new HashSet<string>(excludedApplications.Select(e => Path.GetFileNameWithoutExtension(e).ToLowerInvariant()))
-                    : new HashSet<string>();
-
-                int processedCount = 0; // Tracks how many sessions were actually muted/unmuted
-
-                // Loop through each session to identify and modify unmapped applications
-                for (int i = 0; i < sessions.Count; i++)
+                try
                 {
-                    try
+                    // Get the process ID of the session and skip system-level processes
+                    int processId = (int)session.GetProcessID;
+                    if (_systemProcessIds.Contains(processId) || processId < 100) continue;
+
+                    // Get the process name safely
+                    string processName = AudioUtilities.GetProcessNameSafely(processId);
+
+                    // Skip if the name is null/empty
+                    if (string.IsNullOrEmpty(processName)) continue;
+
+                    // Check if this process matches any mapped application using fuzzy matching
+                    string cleanedProcName = Path.GetFileNameWithoutExtension(processName).ToLowerInvariant();
+
+                    // Skip if this app is in the exclusion list
+                    if (exclusionSet.Any(excluded => IsProcessNameMatch(cleanedProcName, excluded)))
+                        continue;
+
+                    bool isMapped = false;
+                    foreach (var mappedApp in mappedApplications)
                     {
-                        var session = sessions[i];
-                        if (session == null) continue;
-
-                        // Get the process ID of the session and skip system-level processes
-                        int processId = (int)session.GetProcessID;
-                        if (_systemProcessIds.Contains(processId) || processId < 100) continue;
-
-                        // Get the process name safely
-                        string processName = AudioUtilities.GetProcessNameSafely(processId);
-
-                        // Skip if the name is null/empty
-                        if (string.IsNullOrEmpty(processName)) continue;
-
-                        // Check if this process matches any mapped application using fuzzy matching
-                        string cleanedProcName = Path.GetFileNameWithoutExtension(processName).ToLowerInvariant();
-
-                        // Skip if this app is in the exclusion list
-                        if (exclusionSet.Any(excluded => IsProcessNameMatch(cleanedProcName, excluded)))
-                            continue;
-
-                        bool isMapped = false;
-                        foreach (var mappedApp in mappedApplications)
+                        string cleanedMappedApp = Path.GetFileNameWithoutExtension(mappedApp).ToLowerInvariant();
+                        if (IsProcessNameMatch(cleanedProcName, cleanedMappedApp))
                         {
-                            string cleanedMappedApp = Path.GetFileNameWithoutExtension(mappedApp).ToLowerInvariant();
-                            if (IsProcessNameMatch(cleanedProcName, cleanedMappedApp))
-                            {
-                                isMapped = true;
-                                break;
-                            }
+                            isMapped = true;
+                            break;
                         }
-
-                        if (isMapped) continue;
-
-                        // Apply mute or unmute to the unmapped session
-                        session.SimpleAudioVolume.Mute = isMuted;
-                        processedCount++;
                     }
-                    catch
-                    {
-                        // Silently skip any session-specific errors
-                    }
+
+                    if (isMapped) continue;
+
+                    // Apply mute or unmute to the unmapped session
+                    session.SimpleAudioVolume.Mute = isMuted;
+                    processedCount++;
                 }
+                catch
+                {
+                    // Silently skip any session-specific errors
+                }
+            }
 
-                // Log the number of sessions affected
 #if DEBUG
-                Debug.WriteLine($"[Unmapped] Mute {isMuted} applied to {processedCount} apps (excluded: {exclusionSet.Count})");
+            Debug.WriteLine($"[Unmapped] Mute {isMuted} applied to {processedCount} apps (excluded: {exclusionSet.Count})");
 #endif
-            }
-            catch (Exception ex)
-            {
-                // Log unexpected failure during the overall operation
-#if DEBUG
-                Debug.WriteLine($"[Unmapped] Failed to mute unmapped applications: {ex.GetType().Name}");
-#endif
-            }
         }
 
 
@@ -178,21 +158,13 @@ namespace DeejNG.Services
 
             try
             {
-                // Get all audio sessions from the default output device
-                var sessions = _deviceEnumerator
-                    .GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia)
-                    .AudioSessionManager.Sessions;
-
                 int sessionCount = 0;
 
-                // Loop through all sessions to find ones matching the executable name
-                for (int i = 0; i < sessions.Count; i++)
+                // Enumerate sessions across ALL render endpoints (includes VoiceMeeter virtual devices)
+                foreach (var session in GetAllRenderSessions())
                 {
                     try
                     {
-                        var session = sessions[i];
-                        if (session == null) continue;
-
                         int processId = (int)session.GetProcessID;
 
                         // Safely retrieve process name associated with the session
@@ -219,7 +191,7 @@ namespace DeejNG.Services
                     {
                         // Log but continue on individual session processing failures
 #if DEBUG
-                        Debug.WriteLine($"[AudioService] Error processing session {i}: {ex.Message}");
+                        Debug.WriteLine($"[AudioService] Error processing session: {ex.Message}");
 #endif
                     }
                 }
@@ -281,81 +253,64 @@ namespace DeejNG.Services
             _lastUnmappedMuted = isMuted;
             _lastMappedApps = new HashSet<string>(mappedApplications);
 
-            try
+            // Build exclusion set for efficient lookup
+            var exclusionSet = excludedApplications != null
+                ? new HashSet<string>(excludedApplications.Select(e => Path.GetFileNameWithoutExtension(e).ToLowerInvariant()))
+                : new HashSet<string>();
+
+            int processedCount = 0;
+
+            // Enumerate sessions across ALL render endpoints (includes VoiceMeeter virtual devices)
+            foreach (var session in GetAllRenderSessions())
             {
-                // Get active audio sessions on the default output device
-                var device = _deviceEnumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-                var sessions = device.AudioSessionManager.Sessions;
-
-                // Build exclusion set for efficient lookup
-                var exclusionSet = excludedApplications != null
-                    ? new HashSet<string>(excludedApplications.Select(e => Path.GetFileNameWithoutExtension(e).ToLowerInvariant()))
-                    : new HashSet<string>();
-
-                int processedCount = 0;
-
-                // Iterate through all available sessions
-                for (int i = 0; i < sessions.Count; i++)
+                try
                 {
-                    try
+                    // Skip known system processes and invalid PIDs
+                    int processId = (int)session.GetProcessID;
+                    if (_systemProcessIds.Contains(processId) || processId < 100) continue;
+
+                    // Resolve the process name safely
+                    string processName = AudioUtilities.GetProcessNameSafely(processId);
+
+                    // Skip if unknown
+                    if (string.IsNullOrEmpty(processName)) continue;
+
+                    // Check if this process matches any mapped application using fuzzy matching
+                    string cleanedProcName = Path.GetFileNameWithoutExtension(processName).ToLowerInvariant();
+
+                    // Skip if this app is in the exclusion list
+                    if (exclusionSet.Any(excluded => IsProcessNameMatch(cleanedProcName, excluded)))
+                        continue;
+
+                    bool isMapped = false;
+                    foreach (var mappedApp in mappedApplications)
                     {
-                        var session = sessions[i];
-                        if (session == null) continue;
-
-                        // Skip known system processes and invalid PIDs
-                        int processId = (int)session.GetProcessID;
-                        if (_systemProcessIds.Contains(processId) || processId < 100) continue;
-
-                        // Resolve the process name safely
-                        string processName = AudioUtilities.GetProcessNameSafely(processId);
-
-                        // Skip if unknown
-                        if (string.IsNullOrEmpty(processName)) continue;
-
-                        // Check if this process matches any mapped application using fuzzy matching
-                        string cleanedProcName = Path.GetFileNameWithoutExtension(processName).ToLowerInvariant();
-
-                        // Skip if this app is in the exclusion list
-                        if (exclusionSet.Any(excluded => IsProcessNameMatch(cleanedProcName, excluded)))
-                            continue;
-
-                        bool isMapped = false;
-                        foreach (var mappedApp in mappedApplications)
+                        string cleanedMappedApp = Path.GetFileNameWithoutExtension(mappedApp).ToLowerInvariant();
+                        if (IsProcessNameMatch(cleanedProcName, cleanedMappedApp))
                         {
-                            string cleanedMappedApp = Path.GetFileNameWithoutExtension(mappedApp).ToLowerInvariant();
-                            if (IsProcessNameMatch(cleanedProcName, cleanedMappedApp))
-                            {
-                                isMapped = true;
-                                break;
-                            }
+                            isMapped = true;
+                            break;
                         }
-
-                        if (isMapped) continue;
-
-                        // Apply mute/volume only to unmapped apps
-                        session.SimpleAudioVolume.Mute = isMuted;
-                        if (!isMuted)
-                        {
-                            session.SimpleAudioVolume.Volume = level;
-                        }
-
-                        processedCount++;
                     }
-                    catch (Exception ex)
+
+                    if (isMapped) continue;
+
+                    // Apply mute/volume only to unmapped apps
+                    session.SimpleAudioVolume.Mute = isMuted;
+                    if (!isMuted)
                     {
-                        // Catch and log errors on a per-session basis to avoid breaking the loop
-#if DEBUG
-                        Debug.WriteLine($"[Unmapped] Failed to apply volume: {ex.GetType().Name}");
-#endif
+                        session.SimpleAudioVolume.Volume = level;
                     }
+
+                    processedCount++;
                 }
-            }
-            catch (Exception ex)
-            {
-                // Catch outer exceptions, e.g. device access failures
+                catch (Exception ex)
+                {
+                    // Catch and log errors on a per-session basis to avoid breaking the loop
 #if DEBUG
-                Debug.WriteLine($"[Unmapped] Failed to apply volume: {ex.GetType().Name}");
+                    Debug.WriteLine($"[Unmapped] Failed to apply volume: {ex.GetType().Name}");
 #endif
+                }
             }
         }
         
@@ -461,6 +416,28 @@ namespace DeejNG.Services
         #region Private Methods
 
         /// <summary>
+        /// Returns all active audio sessions across all active render endpoints.
+        /// This ensures apps routed through VoiceMeeter or other virtual audio devices are included.
+        /// </summary>
+        private IEnumerable<AudioSessionControl> GetAllRenderSessions()
+        {
+            var devices = _deviceEnumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active);
+            foreach (var device in devices)
+            {
+                SessionCollection sessions;
+                try { sessions = device.AudioSessionManager.Sessions; }
+                catch { continue; }
+
+                for (int i = 0; i < sessions.Count; i++)
+                {
+                    AudioSessionControl session = null;
+                    try { session = sessions[i]; } catch { }
+                    if (session != null) yield return session;
+                }
+            }
+        }
+
+        /// <summary>
         /// Determines if a process name matches the target using fuzzy matching.
         /// Handles cases where user specifies partial names (e.g., "spotify" matches "spotify.exe").
         /// </summary>
@@ -498,11 +475,6 @@ namespace DeejNG.Services
         {
             try
             {
-                // Get all current audio sessions from the default render device (e.g., speakers)
-                var sessions = _deviceEnumerator
-                    .GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia)
-                    .AudioSessionManager.Sessions;
-
                 var currentTime = DateTime.Now;
 
                 // Tracks active process IDs seen during this refresh
@@ -511,14 +483,14 @@ namespace DeejNG.Services
                 // Temporary dictionary to group session info by process name
                 var sessionsByApp = new Dictionary<string, List<SessionInfo>>(StringComparer.OrdinalIgnoreCase);
 
-                // Limit number of sessions processed to 20 for performance reasons
-                int maxSessionsToProcess = Math.Min(sessions.Count, 20);
+                int processedCount = 0;
 
-                for (int i = 0; i < maxSessionsToProcess; i++)
+                // Enumerate sessions across ALL render endpoints (includes VoiceMeeter virtual devices)
+                foreach (var session in GetAllRenderSessions())
                 {
+                    if (processedCount >= 40) break; // cap to prevent runaway enumeration
                     try
                     {
-                        var session = sessions[i];
                         int processId = (int)session.GetProcessID;
                         currentProcessIds.Add(processId);
 
@@ -540,12 +512,14 @@ namespace DeejNG.Services
                             ProcessId = processId,
                             LastSeen = currentTime
                         });
+
+                        processedCount++;
                     }
                     catch (Exception ex)
                     {
                         // Catch and log any issues with individual session processing
 #if DEBUG
-                        Debug.WriteLine($"[AudioService] Error refreshing session {i}: {ex.Message}");
+                        Debug.WriteLine($"[AudioService] Error refreshing session: {ex.Message}");
 #endif
                     }
                 }

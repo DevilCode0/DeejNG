@@ -25,6 +25,18 @@ namespace DeejNG.Models
         public bool IsOutputDevice { get; set; } = false;
 
         /// <summary>
+        /// Indicates whether this target is a VoiceMeeter bus (Hardware Out A1, A2, … or B1, B2, …).
+        /// When true, <see cref="BusIndex"/> identifies which Bus[n] to control via the VoiceMeeter Remote API.
+        /// </summary>
+        public bool IsVoiceMeeterBus { get; set; } = false;
+
+        /// <summary>
+        /// Zero-based VoiceMeeter bus index (only used when <see cref="IsVoiceMeeterBus"/> is true).
+        /// Corresponds to Bus[n].Gain / Bus[n].Mute in the VoiceMeeter Remote API.
+        /// </summary>
+        public int BusIndex { get; set; } = 0;
+
+        /// <summary>
         /// The name of the audio target (e.g., "Spotify", "Microphone", "Speakers").
         /// </summary>
         public string Name { get; set; } = "";
