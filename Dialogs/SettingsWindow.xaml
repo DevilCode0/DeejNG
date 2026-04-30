@@ -44,6 +44,11 @@
             </Grid>
         </Border>
 
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="20,10">
+            <Button Content="Save" Style="{StaticResource ModernButton}" Click="Save_Click" Margin="0,0,10,0"/>
+            <Button Content="Cancel" Style="{StaticResource ModernButton}" Click="Cancel_Click"/>
+        </StackPanel>
+
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
 
             <Grid Margin="20">
@@ -53,8 +58,6 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
@@ -198,28 +201,6 @@
                     </Border>
                 </StackPanel>
 
-                <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
-                    <TextBlock Text="Physical Buttons (Experimental)" Style="{StaticResource TitleTextBlock}" FontSize="18" Margin="0,0,0,16"/>
-                    <Border Style="{StaticResource Card}" Padding="20" Margin="0,0,0,20">
-                        <StackPanel>
-                            <TextBlock Text="Configure physical buttons on your controller"
-                                       Style="{StaticResource SubtitleTextBlock}"
-                                       Margin="0,0,0,12"/>
-
-                            <Button Content="Configure Buttons..."
-                                    Style="{StaticResource ModernButton}"
-                                    Click="ConfigureButtons_Click"
-                                    HorizontalAlignment="Left"
-                                    Padding="16,8"
-                                    ToolTip="Open button configuration dialog"/>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
-
-                <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,0">
-                    <Button Content="Save" Style="{StaticResource ModernButton}" Click="Save_Click" Margin="0,0,10,0"/>
-                    <Button Content="Cancel" Style="{StaticResource ModernButton}" Click="Cancel_Click"/>
-                </StackPanel>
 
             </Grid>
         </ScrollViewer>
