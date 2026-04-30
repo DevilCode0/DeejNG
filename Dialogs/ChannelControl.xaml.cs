@@ -247,15 +247,18 @@ namespace DeejNG.Dialogs
         /// If false, only updates the UI (used when syncing from external audio notifications to prevent feedback loops).</param>
         public void SetMuted(bool muted, bool applyToAudio = false)
         {
-            _suppressEvents = true;        // Prevent MuteButton.Checked/Unchecked events during update
-            _isMuted = muted;              // Update internal state
-            MuteButton.IsChecked = muted;  // Reflect change in the UI control
-            UpdateMuteButtonVisual();      // Update any related visual styling (e.g., icon color)
-            _suppressEvents = false;       // Re-enable events
-            
-            // If requested, apply the mute state to audio devices
-            // This is used for hardware button presses and inline mute, but NOT for 
-            // external audio session notifications (which would create a feedback loop)
+            _suppressEvents = true;
+            try
+            {
+                _isMuted = muted;
+                MuteButton.IsChecked = muted;
+                UpdateMuteButtonVisual();
+            }
+            finally
+            {
+                _suppressEvents = false;
+            }
+
             if (applyToAudio)
             {
                 VolumeOrMuteChanged?.Invoke(_audioTargets, CurrentVolume, _isMuted);

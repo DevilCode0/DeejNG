@@ -1450,10 +1450,15 @@ namespace DeejNG
 
                 if (mapping.Action == ButtonAction.None) return;
 
-                _buttonActionHandler.ExecuteAction(mapping);
+                bool capturedIsPlayPause = isPlayPauseAction;
+                var capturedMapping = mapping;
+                Dispatcher.BeginInvoke(() =>
+                {
+                    _buttonActionHandler.ExecuteAction(capturedMapping);
 
-                if (isPlayPauseAction)
-                    _playPauseState = !_playPauseState;
+                    if (capturedIsPlayPause)
+                        _playPauseState = !_playPauseState;
+                });
             }
             catch (Exception ex)
             {
