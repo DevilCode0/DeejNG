@@ -256,7 +256,6 @@ Profiles stored in `profiles.json` in the same directory. All saves are throttle
 
 Themes are XAML ResourceDictionary files in Themes/ directory:
 - DarkTheme.xaml, LightTheme.xaml (default pair)
-- Additional themes: Arctic, Cyberpunk, Dracula, Forest, Nord, Ocean, Fluent, Mideej
 
 Switched dynamically via App.xaml.cs resource merging.
 

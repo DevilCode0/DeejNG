@@ -10,7 +10,8 @@
 
             <!-- FIRST: Merged dictionaries -->
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Themes/MideejTheme.xaml" />
+                <ResourceDictionary Source="/Themes/DarkTheme.xaml" />
+                <ResourceDictionary Source="/Themes/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
         </ResourceDictionary>
