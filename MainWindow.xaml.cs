@@ -2755,11 +2755,11 @@ namespace DeejNG
                 var btn = _physicalButtonRow[i];
                 if (btn == null) continue;
 
-                btn.IsEnabled = i <= _maxDetectedButtonIndex;
+                btn.IsEnabled = true;
 
                 var mapping = mappings?.FirstOrDefault(m => m.ButtonIndex == i);
                 string actionLabel = GetPhysicalButtonActionLabel(mapping?.Action ?? ButtonAction.None, mapping);
-                btn.Content = $"BTN {i + 1}: {actionLabel}";
+                btn.Content = actionLabel;
                 btn.ToolTip = GetPhysicalButtonTooltip(mapping);
             }
         }

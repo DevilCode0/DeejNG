@@ -219,26 +219,23 @@
                                Margin="0,0,12,0"/>
                     <Button x:Name="PhysicalButton1"
                             Tag="0"
-                            Content="BTN 1"
+                            Content="—"
                             Style="{StaticResource ModernButton}"
                             MinWidth="120"
                             Margin="0,0,8,0"
-                            IsEnabled="False"
                             Click="PhysicalButton_Click"/>
                     <Button x:Name="PhysicalButton2"
                             Tag="1"
-                            Content="BTN 2"
+                            Content="—"
                             Style="{StaticResource ModernButton}"
                             MinWidth="120"
                             Margin="0,0,8,0"
-                            IsEnabled="False"
                             Click="PhysicalButton_Click"/>
                     <Button x:Name="PhysicalButton3"
                             Tag="2"
-                            Content="BTN 3"
+                            Content="—"
                             Style="{StaticResource ModernButton}"
                             MinWidth="120"
-                            IsEnabled="False"
                             Click="PhysicalButton_Click"/>
                 </StackPanel>
             </Border>
