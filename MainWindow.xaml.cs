@@ -129,6 +129,9 @@ namespace DeejNG
         private int _activePopupButtonIndex = -1;
         private int _maxDetectedButtonIndex = -1;
         private Button[] _physicalButtonRow;
+        private uint _activePopupKeyCode = 0;
+        private int _activePopupKeyModifiers = 0;
+        private string _activePopupKeyComboDisplay = "";
         private Brush _physicalButtonDefaultBrush;
 
         private Dictionary<string, IAudioSessionEventsHandler> _registeredHandlers = new();
@@ -1301,6 +1304,7 @@ namespace DeejNG
                 ButtonAction.MuteChannel => "🔇",
                 ButtonAction.GlobalMute => "🔕",
                 ButtonAction.ToggleInputOutput => "🔄",
+                ButtonAction.KeyboardShortcut => "⌨",
                 _ => "🔘"
             };
         }
@@ -1319,6 +1323,8 @@ namespace DeejNG
                 ButtonAction.MuteChannel => $"Mute Ch{mapping.TargetChannelIndex + 1}",
                 ButtonAction.GlobalMute => "Global Mute",
                 ButtonAction.ToggleInputOutput => "Toggle I/O",
+                ButtonAction.KeyboardShortcut => string.IsNullOrEmpty(mapping.KeyComboDisplay)
+                    ? "Keyboard Shortcut" : mapping.KeyComboDisplay,
                 _ => mapping.Action.ToString()
             };
 
@@ -1430,7 +1436,8 @@ namespace DeejNG
                 bool isPlayPauseAction = mapping.Action == ButtonAction.MediaPlayPause;
                 bool isMomentaryAction = mapping.Action == ButtonAction.MediaNext ||
                                         mapping.Action == ButtonAction.MediaPrevious ||
-                                        mapping.Action == ButtonAction.MediaStop;
+                                        mapping.Action == ButtonAction.MediaStop ||
+                                        mapping.Action == ButtonAction.KeyboardShortcut;
 
                 // Ensure button handler is initialized (do this outside dispatcher to avoid repeated checks)
                 if (_buttonActionHandler == null)
@@ -2776,6 +2783,8 @@ namespace DeejNG
                     ? $"Mute Ch{mapping.TargetChannelIndex + 1}"
                     : "Mute Channel",
                 ButtonAction.GlobalMute => "Global Mute",
+                ButtonAction.KeyboardShortcut => string.IsNullOrEmpty(mapping?.KeyComboDisplay)
+                    ? "Shortcut" : mapping.KeyComboDisplay,
                 _ => "—"
             };
         }
@@ -2795,22 +2804,39 @@ namespace DeejNG
             if (!int.TryParse(tagStr, out int idx)) return;
 
             _activePopupButtonIndex = idx;
+            _activePopupKeyCode = 0;
+            _activePopupKeyModifiers = 0;
+            _activePopupKeyComboDisplay = "";
             PopupHeader.Text = $"Configure Button {idx + 1}";
 
             var mapping = _settingsManager.AppSettings?.ButtonMappings?.FirstOrDefault(m => m.ButtonIndex == idx);
-            int actionIndex = mapping != null ? (int)mapping.Action : 0;
-            // Guard against out-of-range (ToggleInputOutput = 7, not in combo)
-            if (actionIndex < 0 || actionIndex >= PopupActionCombo.Items.Count) actionIndex = 0;
-            PopupActionCombo.SelectedIndex = actionIndex;
+            int comboIndex = mapping != null ? GetPopupComboIndex(mapping.Action) : 0;
+            PopupActionCombo.SelectedIndex = comboIndex;
 
             if (mapping != null && mapping.Action == ButtonAction.MuteChannel && mapping.TargetChannelIndex >= 0)
                 PopupChannelText.Text = (mapping.TargetChannelIndex + 1).ToString();
             else
                 PopupChannelText.Text = "";
 
-            PopupChannelPanel.Visibility = (ButtonAction)actionIndex == ButtonAction.MuteChannel
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+            if (mapping != null && mapping.Action == ButtonAction.KeyboardShortcut)
+            {
+                _activePopupKeyCode = mapping.KeyCode;
+                _activePopupKeyModifiers = mapping.KeyModifiers;
+                _activePopupKeyComboDisplay = mapping.KeyComboDisplay;
+                PopupKeyComboText.Text = string.IsNullOrEmpty(mapping.KeyComboDisplay)
+                    ? "(click here, then press a combo)"
+                    : mapping.KeyComboDisplay;
+            }
+            else
+            {
+                PopupKeyComboText.Text = "(click here, then press a combo)";
+            }
+
+            var selectedAction = GetPopupComboAction(comboIndex);
+            PopupChannelPanel.Visibility = selectedAction == ButtonAction.MuteChannel
+                ? Visibility.Visible : Visibility.Collapsed;
+            PopupKeyComboPanel.Visibility = selectedAction == ButtonAction.KeyboardShortcut
+                ? Visibility.Visible : Visibility.Collapsed;
 
             ButtonActionPopup.PlacementTarget = btn;
             ButtonActionPopup.IsOpen = true;
@@ -2819,17 +2845,19 @@ namespace DeejNG
         private void PopupActionCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (PopupActionCombo == null || PopupChannelPanel == null) return;
-            var selected = (ButtonAction)PopupActionCombo.SelectedIndex;
+            var selected = GetPopupComboAction(PopupActionCombo.SelectedIndex);
             PopupChannelPanel.Visibility = selected == ButtonAction.MuteChannel
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+                ? Visibility.Visible : Visibility.Collapsed;
+            if (PopupKeyComboPanel != null)
+                PopupKeyComboPanel.Visibility = selected == ButtonAction.KeyboardShortcut
+                    ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void PopupSave_Click(object sender, RoutedEventArgs e)
         {
             if (_activePopupButtonIndex < 0) return;
 
-            var action = (ButtonAction)PopupActionCombo.SelectedIndex;
+            var action = GetPopupComboAction(PopupActionCombo.SelectedIndex);
             int targetChannel = -1;
             if (action == ButtonAction.MuteChannel)
             {
@@ -2846,6 +2874,9 @@ namespace DeejNG
                     ButtonIndex = _activePopupButtonIndex,
                     Action = action,
                     TargetChannelIndex = targetChannel,
+                    KeyCode = action == ButtonAction.KeyboardShortcut ? _activePopupKeyCode : 0,
+                    KeyModifiers = action == ButtonAction.KeyboardShortcut ? _activePopupKeyModifiers : 0,
+                    KeyComboDisplay = action == ButtonAction.KeyboardShortcut ? _activePopupKeyComboDisplay : "",
                     FriendlyName = $"Button {_activePopupButtonIndex + 1}"
                 });
             }
@@ -2859,6 +2890,57 @@ namespace DeejNG
         {
             ButtonActionPopup.IsOpen = false;
         }
+
+        private void PopupKeyComboText_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            Key key = e.Key == Key.System ? e.SystemKey : e.Key;
+            if (key is Key.LeftCtrl or Key.RightCtrl or Key.LeftAlt or Key.RightAlt
+                or Key.LeftShift or Key.RightShift or Key.LWin or Key.RWin)
+                return;
+
+            var m = Keyboard.Modifiers;
+            int modBits = 0;
+            var parts = new System.Collections.Generic.List<string>();
+            if ((m & ModifierKeys.Control) != 0) { modBits |= 1; parts.Add("Ctrl"); }
+            if ((m & ModifierKeys.Alt)     != 0) { modBits |= 2; parts.Add("Alt"); }
+            if ((m & ModifierKeys.Shift)   != 0) { modBits |= 4; parts.Add("Shift"); }
+            if ((m & ModifierKeys.Windows) != 0) { modBits |= 8; parts.Add("Win"); }
+
+            uint vk = (uint)System.Windows.Input.KeyInterop.VirtualKeyFromKey(key);
+            parts.Add(key.ToString());
+            string display = string.Join("+", parts);
+
+            _activePopupKeyCode = vk;
+            _activePopupKeyModifiers = modBits;
+            _activePopupKeyComboDisplay = display;
+
+            if (sender is TextBox tb) tb.Text = display;
+            e.Handled = true;
+        }
+
+        private static int GetPopupComboIndex(ButtonAction action) => action switch
+        {
+            ButtonAction.MediaPlayPause   => 1,
+            ButtonAction.MediaNext        => 2,
+            ButtonAction.MediaPrevious    => 3,
+            ButtonAction.MediaStop        => 4,
+            ButtonAction.MuteChannel      => 5,
+            ButtonAction.GlobalMute       => 6,
+            ButtonAction.KeyboardShortcut => 7,
+            _ => 0
+        };
+
+        private static ButtonAction GetPopupComboAction(int index) => index switch
+        {
+            1 => ButtonAction.MediaPlayPause,
+            2 => ButtonAction.MediaNext,
+            3 => ButtonAction.MediaPrevious,
+            4 => ButtonAction.MediaStop,
+            5 => ButtonAction.MuteChannel,
+            6 => ButtonAction.GlobalMute,
+            7 => ButtonAction.KeyboardShortcut,
+            _ => ButtonAction.None
+        };
 
         private void NumberValidation_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {

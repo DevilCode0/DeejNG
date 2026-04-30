@@ -85,38 +85,58 @@
                                                 CornerRadius="4"
                                                 Padding="12"
                                                 Margin="0,0,0,8">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="80"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="100"/>
-                                                </Grid.ColumnDefinitions>
+                                            <StackPanel>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="100"/>
+                                                    </Grid.ColumnDefinitions>
 
-                                                <TextBlock Grid.Column="0"
-                                                           Text="{Binding ButtonIndexDisplay}"
-                                                           Style="{StaticResource LabelTextBlock}"
-                                                           VerticalAlignment="Center"/>
+                                                    <TextBlock Grid.Column="0"
+                                                               Text="{Binding ButtonIndexDisplay}"
+                                                               Style="{StaticResource LabelTextBlock}"
+                                                               VerticalAlignment="Center"/>
 
-                                                <ComboBox Grid.Column="1"
-                                                          SelectedIndex="{Binding ActionIndex, Mode=TwoWay}"
-                                                          Style="{StaticResource ModernComboBox}"
-                                                          Margin="8,0"
-                                                          SelectionChanged="ButtonAction_SelectionChanged">
-                                                    <ComboBoxItem Content="None"/>
-                                                    <ComboBoxItem Content="Media Play/Pause"/>
-                                                    <ComboBoxItem Content="Media Next"/>
-                                                    <ComboBoxItem Content="Media Previous"/>
-                                                    <ComboBoxItem Content="Media Stop"/>
-                                                    <ComboBoxItem Content="Mute Channel"/>
-                                                    <ComboBoxItem Content="Global Mute"/>
-                                                </ComboBox>
+                                                    <ComboBox Grid.Column="1"
+                                                              SelectedIndex="{Binding ActionIndex, Mode=TwoWay}"
+                                                              Style="{StaticResource ModernComboBox}"
+                                                              Margin="8,0"
+                                                              SelectionChanged="ButtonAction_SelectionChanged">
+                                                        <ComboBoxItem Content="None"/>
+                                                        <ComboBoxItem Content="Media Play/Pause"/>
+                                                        <ComboBoxItem Content="Media Next"/>
+                                                        <ComboBoxItem Content="Media Previous"/>
+                                                        <ComboBoxItem Content="Media Stop"/>
+                                                        <ComboBoxItem Content="Mute Channel"/>
+                                                        <ComboBoxItem Content="Global Mute"/>
+                                                        <ComboBoxItem Content="Keyboard Shortcut"/>
+                                                    </ComboBox>
 
-                                                <TextBox Grid.Column="2"
-                                                         Text="{Binding TargetChannelDisplay, Mode=TwoWay}"
-                                                         IsEnabled="{Binding NeedsTargetChannel}"
-                                                         ToolTip="Target channel (1-based)"
-                                                         PreviewTextInput="NumberValidationTextBox"/>
-                                            </Grid>
+                                                    <TextBox Grid.Column="2"
+                                                             Text="{Binding TargetChannelDisplay, Mode=TwoWay}"
+                                                             IsEnabled="{Binding NeedsTargetChannel}"
+                                                             ToolTip="Target channel (1-based)"
+                                                             PreviewTextInput="NumberValidationTextBox"/>
+                                                </Grid>
+                                                <Grid Visibility="{Binding KeyCaptureVisibility}"
+                                                      Margin="0,8,0,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="80"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0"
+                                                               Text="Shortcut:"
+                                                               Style="{StaticResource LabelTextBlock}"
+                                                               VerticalAlignment="Center"/>
+                                                    <TextBox Grid.Column="1"
+                                                             IsReadOnly="True"
+                                                             Text="{Binding KeyComboDisplay, Mode=OneWay}"
+                                                             ToolTip="Click here and press your key combo (e.g. Ctrl+C)"
+                                                             Margin="8,0,0,0"
+                                                             PreviewKeyDown="ButtonKeyCombo_PreviewKeyDown"/>
+                                                </Grid>
+                                            </StackPanel>
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>

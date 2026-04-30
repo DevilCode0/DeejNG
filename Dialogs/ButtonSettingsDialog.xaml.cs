@@ -116,7 +116,10 @@ namespace DeejNG.Dialogs
                 {
                     ButtonIndex = i,
                     Action = existingMapping?.Action ?? ButtonAction.None,
-                    TargetChannelIndex = existingMapping?.TargetChannelIndex ?? -1
+                    TargetChannelIndex = existingMapping?.TargetChannelIndex ?? -1,
+                    KeyCode = existingMapping?.KeyCode ?? 0,
+                    KeyModifiers = existingMapping?.KeyModifiers ?? 0,
+                    KeyComboDisplay = existingMapping?.KeyComboDisplay ?? ""
                 };
 
                 _buttonMappings.Add(viewModel);
@@ -147,6 +150,38 @@ namespace DeejNG.Dialogs
         }
 
         /// <summary>
+        /// Captures a key combo when the user presses a key in the shortcut capture TextBox.
+        /// </summary>
+        private void ButtonKeyCombo_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (sender is not TextBox tb || tb.DataContext is not ButtonMappingViewModel vm) return;
+
+            Key key = e.Key == Key.System ? e.SystemKey : e.Key;
+            if (key is Key.LeftCtrl or Key.RightCtrl or Key.LeftAlt or Key.RightAlt
+                or Key.LeftShift or Key.RightShift or Key.LWin or Key.RWin)
+                return;
+
+            var m = Keyboard.Modifiers;
+            int modBits = 0;
+            var parts = new List<string>();
+            if ((m & ModifierKeys.Control) != 0) { modBits |= 1; parts.Add("Ctrl"); }
+            if ((m & ModifierKeys.Alt)     != 0) { modBits |= 2; parts.Add("Alt"); }
+            if ((m & ModifierKeys.Shift)   != 0) { modBits |= 4; parts.Add("Shift"); }
+            if ((m & ModifierKeys.Windows) != 0) { modBits |= 8; parts.Add("Win"); }
+
+            uint vk = (uint)KeyInterop.VirtualKeyFromKey(key);
+            parts.Add(key.ToString());
+            string display = string.Join("+", parts);
+
+            vm.KeyCode = vk;
+            vm.KeyModifiers = modBits;
+            vm.KeyComboDisplay = display;
+            tb.Text = display;
+
+            e.Handled = true;
+        }
+
+        /// <summary>
         /// Saves button configuration to settings.
         /// Only saves button mappings that have actions assigned.
         /// Buttons are auto-detected from hardware (10000/10001 protocol).
@@ -163,6 +198,9 @@ namespace DeejNG.Dialogs
                     ButtonIndex = viewModel.ButtonIndex,
                     Action = viewModel.Action,
                     TargetChannelIndex = viewModel.TargetChannelIndex,
+                    KeyCode = viewModel.KeyCode,
+                    KeyModifiers = viewModel.KeyModifiers,
+                    KeyComboDisplay = viewModel.KeyComboDisplay,
                     FriendlyName = $"Button {viewModel.ButtonIndex + 1}"
                 });
             }
@@ -177,9 +215,25 @@ namespace DeejNG.Dialogs
         /// </summary>
         public class ButtonMappingViewModel : INotifyPropertyChanged
         {
+            // Combo index to enum mapping — skips ToggleInputOutput (=7)
+            private static readonly ButtonAction[] ComboIndexToAction =
+            {
+                ButtonAction.None,            // 0
+                ButtonAction.MediaPlayPause,  // 1
+                ButtonAction.MediaNext,       // 2
+                ButtonAction.MediaPrevious,   // 3
+                ButtonAction.MediaStop,       // 4
+                ButtonAction.MuteChannel,     // 5
+                ButtonAction.GlobalMute,      // 6
+                ButtonAction.KeyboardShortcut // 7
+            };
+
             private int _buttonIndex;
             private ButtonAction _action;
             private int _targetChannelIndex;
+            private uint _keyCode;
+            private int _keyModifiers;
+            private string _keyComboDisplay = "";
 
             public int ButtonIndex
             {
@@ -203,18 +257,28 @@ namespace DeejNG.Dialogs
                     OnPropertyChanged(nameof(Action));
                     OnPropertyChanged(nameof(ActionIndex));
                     OnPropertyChanged(nameof(NeedsTargetChannel));
+                    OnPropertyChanged(nameof(NeedsKeyCapture));
+                    OnPropertyChanged(nameof(KeyCaptureVisibility));
                 }
             }
 
             public int ActionIndex
             {
-                get => (int)_action;
+                get
+                {
+                    int idx = Array.IndexOf(ComboIndexToAction, _action);
+                    return idx >= 0 ? idx : 0;
+                }
                 set
                 {
-                    _action = (ButtonAction)value;
+                    _action = value >= 0 && value < ComboIndexToAction.Length
+                        ? ComboIndexToAction[value]
+                        : ButtonAction.None;
                     OnPropertyChanged(nameof(Action));
                     OnPropertyChanged(nameof(ActionIndex));
                     OnPropertyChanged(nameof(NeedsTargetChannel));
+                    OnPropertyChanged(nameof(NeedsKeyCapture));
+                    OnPropertyChanged(nameof(KeyCaptureVisibility));
                 }
             }
 
@@ -235,17 +299,35 @@ namespace DeejNG.Dialogs
                 set
                 {
                     if (int.TryParse(value, out int channelNum) && channelNum > 0)
-                    {
                         TargetChannelIndex = channelNum - 1;
-                    }
                     else
-                    {
                         TargetChannelIndex = -1;
-                    }
                 }
             }
 
+            public uint KeyCode
+            {
+                get => _keyCode;
+                set { _keyCode = value; OnPropertyChanged(nameof(KeyCode)); }
+            }
+
+            public int KeyModifiers
+            {
+                get => _keyModifiers;
+                set { _keyModifiers = value; OnPropertyChanged(nameof(KeyModifiers)); }
+            }
+
+            public string KeyComboDisplay
+            {
+                get => _keyComboDisplay;
+                set { _keyComboDisplay = value ?? ""; OnPropertyChanged(nameof(KeyComboDisplay)); }
+            }
+
             public bool NeedsTargetChannel => _action == ButtonAction.MuteChannel;
+            public bool NeedsKeyCapture    => _action == ButtonAction.KeyboardShortcut;
+
+            public System.Windows.Visibility KeyCaptureVisibility =>
+                NeedsKeyCapture ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
 
             public event PropertyChangedEventHandler? PropertyChanged;
 

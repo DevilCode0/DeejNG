@@ -272,6 +272,7 @@
                             <ComboBoxItem Content="Media Stop"/>
                             <ComboBoxItem Content="Mute Channel"/>
                             <ComboBoxItem Content="Global Mute"/>
+                            <ComboBoxItem Content="Keyboard Shortcut"/>
                         </ComboBox>
                         <StackPanel x:Name="PopupChannelPanel" Visibility="Collapsed" Margin="0,0,0,10">
                             <TextBlock Text="Target Channel (1-based):"
@@ -279,6 +280,15 @@
                                        Margin="0,0,0,4"/>
                             <TextBox x:Name="PopupChannelText"
                                      PreviewTextInput="NumberValidation_PreviewTextInput"/>
+                        </StackPanel>
+                        <StackPanel x:Name="PopupKeyComboPanel" Visibility="Collapsed" Margin="0,0,0,10">
+                            <TextBlock Text="Key combo:"
+                                       Style="{StaticResource SubtitleTextBlock}"
+                                       Margin="0,0,0,4"/>
+                            <TextBox x:Name="PopupKeyComboText"
+                                     IsReadOnly="True"
+                                     Text="(click here, then press a combo)"
+                                     PreviewKeyDown="PopupKeyComboText_PreviewKeyDown"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <Button Content="Save"

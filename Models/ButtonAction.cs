@@ -43,6 +43,11 @@ namespace DeejNG.Models
         /// <summary>
         /// Toggle input/output mode for a specific channel.
         /// </summary>
-        ToggleInputOutput = 7
+        ToggleInputOutput = 7,
+
+        /// <summary>
+        /// Send a custom keyboard shortcut (e.g. Ctrl+C, Alt+Tab, F5).
+        /// </summary>
+        KeyboardShortcut = 8
     }
 }

@@ -28,6 +28,15 @@ namespace DeejNG.Services
 
         private const byte VK_MEDIA_STOP = 0xB2;
 
+        // Virtual key codes for modifier keys
+        private const byte VK_SHIFT   = 0x10;
+        private const byte VK_CONTROL = 0x11;
+        private const byte VK_MENU    = 0x12; // Alt
+        private const byte VK_LWIN    = 0x5B;
+
+        [Flags]
+        private enum KeyMod { None = 0, Ctrl = 1, Alt = 2, Shift = 4, Win = 8 }
+
         private readonly List<ChannelControl> _channelControls;
 
         #endregion Private Fields
@@ -88,11 +97,13 @@ namespace DeejNG.Services
 
                     case ButtonAction.ToggleInputOutput:
                         // Not currently implemented - InputMode is not in ChannelControl
+                        break;
 
+                    case ButtonAction.KeyboardShortcut:
+                        SendKeyCombo((byte)mapping.KeyCode, (KeyMod)mapping.KeyModifiers);
                         break;
 
                     default:
-
                         break;
                 }
             }
@@ -113,12 +124,29 @@ namespace DeejNG.Services
         /// </summary>
         private void SendMediaKey(byte keyCode)
         {
-            // Press the key
             keybd_event(keyCode, 0, KEYEVENTF_EXTENDEDKEY, UIntPtr.Zero);
-            // Release the key
             keybd_event(keyCode, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, UIntPtr.Zero);
+        }
 
+        /// <summary>
+        /// Simulates a key combo press with optional modifiers (Ctrl, Alt, Shift, Win).
+        /// </summary>
+        private void SendKeyCombo(byte vk, KeyMod mods)
+        {
+            if (vk == 0) return;
 
+            if ((mods & KeyMod.Ctrl)  != 0) keybd_event(VK_CONTROL, 0, 0, UIntPtr.Zero);
+            if ((mods & KeyMod.Alt)   != 0) keybd_event(VK_MENU,    0, 0, UIntPtr.Zero);
+            if ((mods & KeyMod.Shift) != 0) keybd_event(VK_SHIFT,   0, 0, UIntPtr.Zero);
+            if ((mods & KeyMod.Win)   != 0) keybd_event(VK_LWIN,    0, 0, UIntPtr.Zero);
+
+            keybd_event(vk, 0, 0, UIntPtr.Zero);
+            keybd_event(vk, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+
+            if ((mods & KeyMod.Win)   != 0) keybd_event(VK_LWIN,    0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            if ((mods & KeyMod.Shift) != 0) keybd_event(VK_SHIFT,   0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            if ((mods & KeyMod.Alt)   != 0) keybd_event(VK_MENU,    0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            if ((mods & KeyMod.Ctrl)  != 0) keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
         }
 
         /// <summary>
