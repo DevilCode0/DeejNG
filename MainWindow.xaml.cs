@@ -125,6 +125,12 @@ namespace DeejNG
         // Track toggle state for latching buttons (PlayPause)
         private bool _playPauseState = false;
 
+        // Physical button quick-config row state
+        private int _activePopupButtonIndex = -1;
+        private int _maxDetectedButtonIndex = -1;
+        private Button[] _physicalButtonRow;
+        private Brush _physicalButtonDefaultBrush;
+
         private Dictionary<string, IAudioSessionEventsHandler> _registeredHandlers = new();
 
         private int _sessionCacheHitCount = 0;
@@ -919,23 +925,23 @@ namespace DeejNG
         {
             try
             {
-                // Buttons are now auto-detected from serial protocol (10000/10001 values)
-                // No need to configure serial manager - it auto-detects
-
-                // Initialize button handler lazily if not yet created
                 if (_buttonActionHandler == null)
-                {
                     _buttonActionHandler = new ButtonActionHandler(_channelControls);
-                }
 
-                // Update button indicators UI
                 UpdateButtonIndicators();
 
+                // Show or hide the physical button row based on whether we have sliders configured
+                if (PhysicalButtonsRow != null)
+                {
+                    PhysicalButtonsRow.Visibility = _channelControls.Count > 0
+                        ? Visibility.Visible
+                        : Visibility.Collapsed;
+                }
 
+                RefreshPhysicalButtonRow();
             }
             catch (Exception ex)
             {
-
             }
         }
 
@@ -1379,6 +1385,32 @@ namespace DeejNG
         /// </summary>
         private void HandleButtonPress(int buttonIndex, bool isPressed)
         {
+            // Track the highest button index seen this session to enable/disable the quick-config row
+            if (buttonIndex > _maxDetectedButtonIndex)
+            {
+                _maxDetectedButtonIndex = buttonIndex;
+                Dispatcher.BeginInvoke(RefreshPhysicalButtonRow, DispatcherPriority.Background);
+            }
+
+            // Highlight the on-screen button while the physical button is held
+            if (buttonIndex < 3 && _physicalButtonRow != null)
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    var btn = _physicalButtonRow[buttonIndex];
+                    if (isPressed)
+                    {
+                        if (_physicalButtonDefaultBrush == null)
+                            _physicalButtonDefaultBrush = btn.Background;
+                        btn.Background = (Brush)TryFindResource("AccentBrush") ?? btn.Background;
+                    }
+                    else
+                    {
+                        if (_physicalButtonDefaultBrush != null)
+                            btn.Background = _physicalButtonDefaultBrush;
+                    }
+                }, DispatcherPriority.Background);
+            }
 
             try
             {
@@ -1815,10 +1847,12 @@ namespace DeejNG
             SliderPanel.Visibility = Visibility.Visible;
             StartOnBootCheckBox.IsChecked = _settingsManager.AppSettings.StartOnBoot;
 
+            // Wire up the physical button quick-config row now that XAML elements are available
+            _physicalButtonRow = new Button[] { PhysicalButton1, PhysicalButton2, PhysicalButton3 };
+            RefreshPhysicalButtonRow();
+
             // Autosize once when layout completes
             this.Dispatcher.BeginInvoke(() => AutoSizeToChannels(), DispatcherPriority.ApplicationIdle);
-
-
         }
 
         private void MaxButton_Click(object sender, RoutedEventArgs e) => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
@@ -2707,6 +2741,131 @@ namespace DeejNG
         private void UpdateButtonIndicatorsCore()
         {
         }
+
+        #region Physical Button Quick-Config Row
+
+        private void RefreshPhysicalButtonRow()
+        {
+            if (_physicalButtonRow == null) return;
+
+            var mappings = _settingsManager.AppSettings?.ButtonMappings;
+
+            for (int i = 0; i < _physicalButtonRow.Length; i++)
+            {
+                var btn = _physicalButtonRow[i];
+                if (btn == null) continue;
+
+                btn.IsEnabled = i <= _maxDetectedButtonIndex;
+
+                var mapping = mappings?.FirstOrDefault(m => m.ButtonIndex == i);
+                string actionLabel = GetPhysicalButtonActionLabel(mapping?.Action ?? ButtonAction.None, mapping);
+                btn.Content = $"BTN {i + 1}: {actionLabel}";
+                btn.ToolTip = GetPhysicalButtonTooltip(mapping);
+            }
+        }
+
+        private static string GetPhysicalButtonActionLabel(ButtonAction action, ButtonMapping mapping)
+        {
+            return action switch
+            {
+                ButtonAction.MediaPlayPause => "Play/Pause",
+                ButtonAction.MediaNext => "Next",
+                ButtonAction.MediaPrevious => "Previous",
+                ButtonAction.MediaStop => "Stop",
+                ButtonAction.MuteChannel => mapping != null && mapping.TargetChannelIndex >= 0
+                    ? $"Mute Ch{mapping.TargetChannelIndex + 1}"
+                    : "Mute Channel",
+                ButtonAction.GlobalMute => "Global Mute",
+                _ => "—"
+            };
+        }
+
+        private static string GetPhysicalButtonTooltip(ButtonMapping mapping)
+        {
+            if (mapping == null || mapping.Action == ButtonAction.None)
+                return "Click to assign an action";
+            if (mapping.Action == ButtonAction.MuteChannel && mapping.TargetChannelIndex >= 0)
+                return $"Mute Channel {mapping.TargetChannelIndex + 1}";
+            return GetPhysicalButtonActionLabel(mapping.Action, mapping);
+        }
+
+        private void PhysicalButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button btn || btn.Tag is not string tagStr) return;
+            if (!int.TryParse(tagStr, out int idx)) return;
+
+            _activePopupButtonIndex = idx;
+            PopupHeader.Text = $"Configure Button {idx + 1}";
+
+            var mapping = _settingsManager.AppSettings?.ButtonMappings?.FirstOrDefault(m => m.ButtonIndex == idx);
+            int actionIndex = mapping != null ? (int)mapping.Action : 0;
+            // Guard against out-of-range (ToggleInputOutput = 7, not in combo)
+            if (actionIndex < 0 || actionIndex >= PopupActionCombo.Items.Count) actionIndex = 0;
+            PopupActionCombo.SelectedIndex = actionIndex;
+
+            if (mapping != null && mapping.Action == ButtonAction.MuteChannel && mapping.TargetChannelIndex >= 0)
+                PopupChannelText.Text = (mapping.TargetChannelIndex + 1).ToString();
+            else
+                PopupChannelText.Text = "";
+
+            PopupChannelPanel.Visibility = (ButtonAction)actionIndex == ButtonAction.MuteChannel
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+            ButtonActionPopup.PlacementTarget = btn;
+            ButtonActionPopup.IsOpen = true;
+        }
+
+        private void PopupActionCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (PopupActionCombo == null || PopupChannelPanel == null) return;
+            var selected = (ButtonAction)PopupActionCombo.SelectedIndex;
+            PopupChannelPanel.Visibility = selected == ButtonAction.MuteChannel
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+        }
+
+        private void PopupSave_Click(object sender, RoutedEventArgs e)
+        {
+            if (_activePopupButtonIndex < 0) return;
+
+            var action = (ButtonAction)PopupActionCombo.SelectedIndex;
+            int targetChannel = -1;
+            if (action == ButtonAction.MuteChannel)
+            {
+                if (int.TryParse(PopupChannelText.Text, out int ch) && ch > 0)
+                    targetChannel = ch - 1;
+            }
+
+            var mappings = _settingsManager.AppSettings.ButtonMappings ??= new List<ButtonMapping>();
+            mappings.RemoveAll(m => m.ButtonIndex == _activePopupButtonIndex);
+            if (action != ButtonAction.None)
+            {
+                mappings.Add(new ButtonMapping
+                {
+                    ButtonIndex = _activePopupButtonIndex,
+                    Action = action,
+                    TargetChannelIndex = targetChannel,
+                    FriendlyName = $"Button {_activePopupButtonIndex + 1}"
+                });
+            }
+
+            _settingsManager.SaveSettings(_settingsManager.AppSettings);
+            RefreshPhysicalButtonRow();
+            ButtonActionPopup.IsOpen = false;
+        }
+
+        private void PopupCancel_Click(object sender, RoutedEventArgs e)
+        {
+            ButtonActionPopup.IsOpen = false;
+        }
+
+        private void NumberValidation_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            e.Handled = !e.Text.All(char.IsDigit);
+        }
+
+        #endregion Physical Button Quick-Config Row
 
         private void UpdateConnectionStatus()
         {

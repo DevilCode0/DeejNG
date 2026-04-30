@@ -202,8 +202,102 @@
             </StackPanel>
         </Border>
 
+            <!-- Physical Buttons Quick-Config Row -->
+            <Border x:Name="PhysicalButtonsRow"
+                    Grid.Row="2"
+                    Margin="20,8,20,0"
+                    Background="{DynamicResource SurfaceBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6"
+                    Padding="12,8"
+                    Visibility="Collapsed">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Physical Buttons:"
+                               Style="{StaticResource SubtitleTextBlock}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,12,0"/>
+                    <Button x:Name="PhysicalButton1"
+                            Tag="0"
+                            Content="BTN 1"
+                            Style="{StaticResource ModernButton}"
+                            MinWidth="120"
+                            Margin="0,0,8,0"
+                            IsEnabled="False"
+                            Click="PhysicalButton_Click"/>
+                    <Button x:Name="PhysicalButton2"
+                            Tag="1"
+                            Content="BTN 2"
+                            Style="{StaticResource ModernButton}"
+                            MinWidth="120"
+                            Margin="0,0,8,0"
+                            IsEnabled="False"
+                            Click="PhysicalButton_Click"/>
+                    <Button x:Name="PhysicalButton3"
+                            Tag="2"
+                            Content="BTN 3"
+                            Style="{StaticResource ModernButton}"
+                            MinWidth="120"
+                            IsEnabled="False"
+                            Click="PhysicalButton_Click"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Action picker popup (shared for all 3 physical buttons) -->
+            <Popup x:Name="ButtonActionPopup"
+                   StaysOpen="False"
+                   Placement="Bottom"
+                   AllowsTransparency="True"
+                   PopupAnimation="Fade">
+                <Border Background="{DynamicResource SurfaceBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        Padding="16"
+                        MinWidth="220">
+                    <StackPanel>
+                        <TextBlock x:Name="PopupHeader"
+                                   Text="Configure Button"
+                                   Style="{StaticResource SubtitleTextBlock}"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,10"/>
+                        <TextBlock Text="Action:"
+                                   Style="{StaticResource SubtitleTextBlock}"
+                                   Margin="0,0,0,4"/>
+                        <ComboBox x:Name="PopupActionCombo"
+                                  Style="{StaticResource ModernComboBox}"
+                                  Margin="0,0,0,10"
+                                  SelectionChanged="PopupActionCombo_SelectionChanged">
+                            <ComboBoxItem Content="None"/>
+                            <ComboBoxItem Content="Media Play/Pause"/>
+                            <ComboBoxItem Content="Media Next"/>
+                            <ComboBoxItem Content="Media Previous"/>
+                            <ComboBoxItem Content="Media Stop"/>
+                            <ComboBoxItem Content="Mute Channel"/>
+                            <ComboBoxItem Content="Global Mute"/>
+                        </ComboBox>
+                        <StackPanel x:Name="PopupChannelPanel" Visibility="Collapsed" Margin="0,0,0,10">
+                            <TextBlock Text="Target Channel (1-based):"
+                                       Style="{StaticResource SubtitleTextBlock}"
+                                       Margin="0,0,0,4"/>
+                            <TextBox x:Name="PopupChannelText"
+                                     PreviewTextInput="NumberValidation_PreviewTextInput"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="Save"
+                                    Style="{StaticResource ModernButton}"
+                                    Margin="0,0,8,0"
+                                    Click="PopupSave_Click"/>
+                            <Button Content="Cancel"
+                                    Style="{StaticResource ModernButton}"
+                                    Click="PopupCancel_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Popup>
+
             <!-- Main content area - Channels -->
-            <WrapPanel Grid.Row="2"
+            <WrapPanel Grid.Row="3"
                        x:Name="SliderPanel"
                        Margin="20,20,20,8">
                 <!-- Dynamically added ChannelControl instances -->
