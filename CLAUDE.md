@@ -34,6 +34,13 @@ dotnet run --project DeejNG.csproj
 dotnet clean
 ```
 
+**Build installer (requires Inno Setup 6):**
+```powershell
+dotnet publish DeejNG.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish\
+& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
+```
+Output: `installer\DeejNG-{version}-Setup.exe`
+
 Note: This is a Windows-only WPF application targeting .NET 9. Requires Windows with audio devices and optionally Arduino hardware for physical slider control.
 
 ## Architecture Overview

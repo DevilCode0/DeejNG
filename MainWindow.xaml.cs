@@ -933,13 +933,7 @@ namespace DeejNG
 
                 UpdateButtonIndicators();
 
-                // Show or hide the physical button row based on whether we have sliders configured
-                if (PhysicalButtonsRow != null)
-                {
-                    PhysicalButtonsRow.Visibility = _channelControls.Count > 0
-                        ? Visibility.Visible
-                        : Visibility.Collapsed;
-                }
+                UpdateConnectionDependentUI();
 
                 RefreshPhysicalButtonRow();
             }
@@ -1856,7 +1850,7 @@ namespace DeejNG
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            SliderPanel.Visibility = Visibility.Visible;
+            UpdateConnectionDependentUI();
             StartOnBootCheckBox.IsChecked = _settingsManager.AppSettings.StartOnBoot;
 
             // Wire up the physical button quick-config row now that XAML elements are available
@@ -2996,7 +2990,68 @@ namespace DeejNG
             ConnectButton.IsEnabled = true;
             ConnectButton.Content = _serialManager.IsConnected ? "Disconnect" : "Connect";
 
+            UpdateConnectionDependentUI();
+        }
 
+        private void UpdateConnectionDependentUI()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.BeginInvoke(UpdateConnectionDependentUI, DispatcherPriority.Background);
+                return;
+            }
+
+            bool ready = _serialManager.IsConnected && _serialManager.IsProtocolValidated;
+
+            if (SliderPanel != null)
+                SliderPanel.Visibility = ready ? Visibility.Visible : Visibility.Collapsed;
+            if (DisconnectedOverlay != null)
+                DisconnectedOverlay.Visibility = ready ? Visibility.Collapsed : Visibility.Visible;
+            if (PhysicalButtonsRow != null)
+                PhysicalButtonsRow.Visibility = (ready && _channelControls.Count > 0)
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+        }
+
+        private void RescanButton_Click(object sender, RoutedEventArgs e)
+        {
+            RescanButton.IsEnabled = false;
+            RescanButton.Content = "Scanning...";
+
+            int baud = _settingsManager.AppSettings.BaudRate > 0
+                ? _settingsManager.AppSettings.BaudRate : 9600;
+
+            try
+            {
+                _serialManager.ClearInvalidPorts();
+                LoadAvailablePorts();
+
+                bool success =
+                    _serialManager.TryConnectToSavedPort(_settingsManager.AppSettings.PortName, baud)
+                    || _serialManager.TryAutoDetect(baud);
+
+                if (!success)
+                {
+                    var t = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1500) };
+                    t.Tick += (_, __) =>
+                    {
+                        t.Stop();
+                        RescanButton.IsEnabled = true;
+                        RescanButton.Content = "Rescan for Device";
+                    };
+                    t.Start();
+                }
+                else
+                {
+                    RescanButton.IsEnabled = true;
+                    RescanButton.Content = "Rescan for Device";
+                }
+            }
+            catch
+            {
+                RescanButton.IsEnabled = true;
+                RescanButton.Content = "Rescan for Device";
+            }
         }
 
         private void UpdateMeters(object? sender, EventArgs e)
