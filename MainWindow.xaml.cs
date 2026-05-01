@@ -1861,9 +1861,7 @@ namespace DeejNG
             this.Dispatcher.BeginInvoke(() => AutoSizeToChannels(), DispatcherPriority.ApplicationIdle);
         }
 
-        private void MaxButton_Click(object sender, RoutedEventArgs e) => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-
-        private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 
         private void MyNotifyIcon_Click(object sender, EventArgs e)
         {
@@ -2692,12 +2690,6 @@ namespace DeejNG
 
             // Do not start a drag when clicking interactive controls
             if (IsInteractiveElement(e.OriginalSource as DependencyObject)) return;
-
-            if (e.ClickCount == 2)
-            {
-                WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-                return;
-            }
 
             try { DragMove(); } catch { }
         }

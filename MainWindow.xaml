@@ -70,14 +70,7 @@
                                 Click="MinButton_Click" 
                                 Margin="4,0"
                                 VerticalAlignment="Center"/>
-                        <Button Content="□" 
-                                Style="{StaticResource IconButton}" 
-                                shell:WindowChrome.IsHitTestVisibleInChrome="True" 
-                                ToolTip="Maximize/Restore" 
-                                Click="MaxButton_Click" 
-                                Margin="4,0"
-                                VerticalAlignment="Center"/>
-                        <Button Content="✕" 
+<Button Content="✕" 
                                 Style="{StaticResource IconButton}" 
                                 shell:WindowChrome.IsHitTestVisibleInChrome="True" 
                                 ToolTip="Close" 
