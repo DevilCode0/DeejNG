@@ -1,0 +1,173 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+
+    <!-- Layout direction -->
+    <FlowDirection x:Key="AppFlowDirection">LeftToRight</FlowDirection>
+
+    <!-- Universal buttons -->
+    <sys:String x:Key="Str_Save">Save</sys:String>
+    <sys:String x:Key="Str_Cancel">Cancel</sys:String>
+    <sys:String x:Key="Str_OK">OK</sys:String>
+    <sys:String x:Key="Str_Delete">Delete</sys:String>
+    <sys:String x:Key="Str_Add">Add</sys:String>
+    <sys:String x:Key="Str_Remove">Remove</sys:String>
+    <sys:String x:Key="Str_Close">Close</sys:String>
+    <sys:String x:Key="Str_Yes">Yes</sys:String>
+    <sys:String x:Key="Str_No">No</sys:String>
+    <sys:String x:Key="Str_New">New</sys:String>
+    <sys:String x:Key="Str_Rename">Rename</sys:String>
+
+    <!-- MainWindow -->
+    <sys:String x:Key="Str_Main_Profile">Profile:</sys:String>
+    <sys:String x:Key="Str_Main_PhysicalButtons">Physical Buttons:</sys:String>
+    <sys:String x:Key="Str_Main_NoDevice">Please connect your device</sys:String>
+    <sys:String x:Key="Str_Main_NoDeviceHint">Plug in your DeejNG hardware over USB, then click Rescan.</sys:String>
+    <sys:String x:Key="Str_Btn_Minimize">Minimize</sys:String>
+    <sys:String x:Key="Str_Btn_Connect">Connect</sys:String>
+    <sys:String x:Key="Str_Btn_Disconnect">Disconnect</sys:String>
+    <sys:String x:Key="Str_Btn_Connecting">Connecting...</sys:String>
+    <sys:String x:Key="Str_Btn_Rescan">Rescan for Device</sys:String>
+    <sys:String x:Key="Str_Btn_Scanning">Scanning...</sys:String>
+    <sys:String x:Key="Str_Theme_Select">Select Theme</sys:String>
+    <sys:String x:Key="Str_Settings_Tooltip">Settings</sys:String>
+    <sys:String x:Key="Str_Profile_New_Tooltip">Create a new profile</sys:String>
+    <sys:String x:Key="Str_Profile_Rename_Tooltip">Rename profile</sys:String>
+    <sys:String x:Key="Str_Profile_Delete_Tooltip">Delete profile</sys:String>
+
+    <!-- Popup (button action picker) -->
+    <sys:String x:Key="Str_Popup_Header">Configure Button</sys:String>
+    <sys:String x:Key="Str_Popup_Action">Action:</sys:String>
+    <sys:String x:Key="Str_Popup_TargetChannel">Target Channel (1-based):</sys:String>
+    <sys:String x:Key="Str_Popup_KeyCombo">Key combo:</sys:String>
+    <sys:String x:Key="Str_Popup_KeyComboPlaceholder">(click here, then press a combo)</sys:String>
+
+    <!-- Connection status (code-behind) -->
+    <sys:String x:Key="Str_Status_Connected">Connected to {0}</sys:String>
+    <sys:String x:Key="Str_Status_Verifying">Verifying {0}...</sys:String>
+    <sys:String x:Key="Str_Status_Reconnecting">Disconnected - Reconnecting...</sys:String>
+    <sys:String x:Key="Str_Status_Disconnected">Disconnected</sys:String>
+    <sys:String x:Key="Str_Status_Attempting">Attempting to reconnect...</sys:String>
+    <sys:String x:Key="Str_Status_Waiting">Waiting for device...</sys:String>
+    <sys:String x:Key="Str_Status_Scanning">Scanning {0}...</sys:String>
+    <sys:String x:Key="Str_Status_ScanningPorts">Scanning COM ports...</sys:String>
+    <sys:String x:Key="Str_Status_Failed">Connection failed - check ports manually</sys:String>
+
+    <!-- Tray menu -->
+    <sys:String x:Key="Str_Tray_ShowHide">Show/Hide</sys:String>
+    <sys:String x:Key="Str_Tray_Exit">Exit</sys:String>
+
+    <!-- Theme names -->
+    <sys:String x:Key="Str_Theme_Dark">Dark</sys:String>
+    <sys:String x:Key="Str_Theme_Light">Light</sys:String>
+
+    <!-- Button actions (combo box items) -->
+    <sys:String x:Key="Str_Action_None">None</sys:String>
+    <sys:String x:Key="Str_Action_PlayPause">Media Play/Pause</sys:String>
+    <sys:String x:Key="Str_Action_Next">Media Next</sys:String>
+    <sys:String x:Key="Str_Action_Previous">Media Previous</sys:String>
+    <sys:String x:Key="Str_Action_Stop">Media Stop</sys:String>
+    <sys:String x:Key="Str_Action_MuteChannel">Mute Channel</sys:String>
+    <sys:String x:Key="Str_Action_GlobalMute">Global Mute</sys:String>
+    <sys:String x:Key="Str_Action_Shortcut">Keyboard Shortcut</sys:String>
+
+    <!-- Channel control -->
+    <sys:String x:Key="Str_Channel_Unmute">Unmute</sys:String>
+    <sys:String x:Key="Str_Channel_Expired">{0} (Expired)</sys:String>
+
+    <!-- Settings window -->
+    <sys:String x:Key="Str_Settings_Title">Settings</sys:String>
+    <sys:String x:Key="Str_Settings_General">General</sys:String>
+    <sys:String x:Key="Str_Settings_Serial">Serial Connection</sys:String>
+    <sys:String x:Key="Str_Settings_Overlay">Overlay</sys:String>
+    <sys:String x:Key="Str_Settings_Unmapped">Unmapped Exclusions</sys:String>
+    <sys:String x:Key="Str_Settings_Language">Language</sys:String>
+    <sys:String x:Key="Str_Settings_InvertSliders">Invert Sliders</sys:String>
+    <sys:String x:Key="Str_Settings_ShowMeters">Show Meters</sys:String>
+    <sys:String x:Key="Str_Settings_StartOnBoot">Start on boot</sys:String>
+    <sys:String x:Key="Str_Settings_StartMinimized">Start minimized</sys:String>
+    <sys:String x:Key="Str_Settings_DisableSmoothing">Disable Smoothing</sys:String>
+    <sys:String x:Key="Str_Settings_UseExpVolume">Use Exponential Volume</sys:String>
+    <sys:String x:Key="Str_Settings_ExpFactor">Exp. Volume Factor</sys:String>
+    <sys:String x:Key="Str_Settings_ComPort">COM Port:</sys:String>
+    <sys:String x:Key="Str_Settings_BaudRate">Baud Rate:</sys:String>
+    <sys:String x:Key="Str_Settings_EnableOverlay">Enable Overlay</sys:String>
+    <sys:String x:Key="Str_Settings_Opacity">Opacity</sys:String>
+    <sys:String x:Key="Str_Settings_AutoClose">Auto-Close Overlay</sys:String>
+    <sys:String x:Key="Str_Settings_Timeout">Timeout (s)</sys:String>
+    <sys:String x:Key="Str_Settings_TextColor">Text Color</sys:String>
+    <sys:String x:Key="Str_Settings_TextColorTooltip">Choose text color: Auto detects background, White/Black forces specific color</sys:String>
+    <sys:String x:Key="Str_Settings_ColorAuto">Auto (Smart Contrast)</sys:String>
+    <sys:String x:Key="Str_Settings_ColorWhite">White Text</sys:String>
+    <sys:String x:Key="Str_Settings_ColorBlack">Black Text</sys:String>
+    <sys:String x:Key="Str_Settings_UnmappedApps">Apps excluded from 'Unmapped Applications' control:</sys:String>
+    <sys:String x:Key="Str_Settings_Language_Label">Language</sys:String>
+
+    <!-- Button Settings dialog -->
+    <sys:String x:Key="Str_BtnSettings_Title">Physical Button Settings</sys:String>
+    <sys:String x:Key="Str_BtnSettings_Section">Physical Buttons (Experimental)</sys:String>
+    <sys:String x:Key="Str_BtnSettings_Configure">Configure physical buttons on your controller</sys:String>
+    <sys:String x:Key="Str_BtnSettings_AutoDetect">ℹ️ Buttons are auto-detected from your Arduino.</sys:String>
+    <sys:String x:Key="Str_BtnSettings_Send">Send 10000 (OFF) or 10001 (ON) for each button after your slider values.</sys:String>
+    <sys:String x:Key="Str_BtnSettings_Example">Example: 512|768|400|10000|10001 (3 sliders + 2 buttons)</sys:String>
+    <sys:String x:Key="Str_BtnSettings_TargetChannel">Target channel (1-based)</sys:String>
+    <sys:String x:Key="Str_BtnSettings_Shortcut">Shortcut:</sys:String>
+    <sys:String x:Key="Str_BtnSettings_ShortcutTooltip">Click here and press your key combo (e.g. Ctrl+C)</sys:String>
+
+    <!-- MultiTargetPickerDialog -->
+    <sys:String x:Key="Str_MultiTarget_Title">Select Applications</sys:String>
+    <sys:String x:Key="Str_MultiTarget_Instruction">Select targets for this slider</sys:String>
+    <sys:String x:Key="Str_MultiTarget_Note">Note: You can select multiple items, but they must be in the same category. Applications already assigned to other sliders are marked and cannot be selected.</sys:String>
+    <sys:String x:Key="Str_MultiTarget_ManualEntry">Manually Specify Application</sys:String>
+    <sys:String x:Key="Str_MultiTarget_ManualHint">Enter application name(s) separated by commas. You can use partial names (e.g., 'spotify' or 'spotify.exe').</sys:String>
+    <sys:String x:Key="Str_MultiTarget_ManualTooltip">e.g., chrome, firefox, spotify</sys:String>
+    <sys:String x:Key="Str_MultiTarget_ManualNote">These applications will be added even if they're not currently running.</sys:String>
+    <sys:String x:Key="Str_MultiTarget_AppGroup">Applications</sys:String>
+    <sys:String x:Key="Str_MultiTarget_InputGroup">Input Devices</sys:String>
+    <sys:String x:Key="Str_MultiTarget_OutputGroup">Output Devices</sys:String>
+
+    <!-- SessionPickerDialog -->
+    <sys:String x:Key="Str_SessionPicker_Title">Select Session</sys:String>
+
+    <!-- InputDialog -->
+    <sys:String x:Key="Str_InputDialog_DefaultPrompt">Enter value:</sys:String>
+    <sys:String x:Key="Str_InputDialog_DefaultTooltip">Enter text here</sys:String>
+
+    <!-- ConfirmationDialog -->
+    <sys:String x:Key="Str_Confirm_DefaultMessage">Are you sure?</sys:String>
+
+    <!-- Message strings (code-behind) -->
+    <sys:String x:Key="Str_Msg_CannotDelete_Title">Cannot Delete</sys:String>
+    <sys:String x:Key="Str_Msg_CannotDeleteLast_Body">Cannot delete the last profile. At least one profile must exist.</sys:String>
+    <sys:String x:Key="Str_Msg_DeleteProfile_Title">Confirm Delete</sys:String>
+    <sys:String x:Key="Str_Msg_DeleteProfile_Body">Are you sure you want to delete profile '{0}'?&#x0a;&#x0a;This action cannot be undone.</sys:String>
+    <sys:String x:Key="Str_Msg_Success_Title">Success</sys:String>
+    <sys:String x:Key="Str_Msg_Error_Title">Error</sys:String>
+    <sys:String x:Key="Str_Msg_DeleteProfileSuccess_Body">Profile '{0}' deleted successfully.</sys:String>
+    <sys:String x:Key="Str_Msg_DeleteProfileFailed_Body">Failed to delete profile '{0}'.</sys:String>
+    <sys:String x:Key="Str_Msg_ProfileError_Body">Error: {0}</sys:String>
+    <sys:String x:Key="Str_Msg_NewProfile_Title">New Profile</sys:String>
+    <sys:String x:Key="Str_Msg_NewProfile_Body">Enter a name for the new profile:</sys:String>
+    <sys:String x:Key="Str_Msg_CopySettings_Title">Copy Settings?</sys:String>
+    <sys:String x:Key="Str_Msg_CopySettings_Body">Do you want to copy the current profile's settings to the new profile?&#x0a;&#x0a;Yes: Copy current settings&#x0a;No: Start with default settings&#x0a;Cancel: Don't create profile</sys:String>
+    <sys:String x:Key="Str_Msg_CreateProfileSuccess_Body">Profile '{0}' created successfully!</sys:String>
+    <sys:String x:Key="Str_Msg_CreateProfileFailed_Body">Failed to create profile '{0}'. A profile with this name may already exist.</sys:String>
+    <sys:String x:Key="Str_Msg_RenameProfile_Title">Rename Profile</sys:String>
+    <sys:String x:Key="Str_Msg_RenameProfile_Body">Enter a new name for profile '{0}':</sys:String>
+    <sys:String x:Key="Str_Msg_RenameProfileSuccess_Body">Profile renamed from '{0}' to '{1}'</sys:String>
+    <sys:String x:Key="Str_Msg_RenameProfileFailed_Body">Failed to rename profile. A profile named '{0}' may already exist.</sys:String>
+    <sys:String x:Key="Str_Msg_ProfileChanged_Title">Profile Changed</sys:String>
+    <sys:String x:Key="Str_Msg_ProfileChanged_Body">Switched to profile: {0}</sys:String>
+    <sys:String x:Key="Str_Msg_NoPortSelected_Title">No Port Selected</sys:String>
+    <sys:String x:Key="Str_Msg_NoPortSelected_Body">Please select a COM port first.</sys:String>
+    <sys:String x:Key="Str_Msg_SettingsError_Title">Settings Error</sys:String>
+    <sys:String x:Key="Str_Msg_SettingsLoadFailed">Settings could not be loaded. Using default settings.</sys:String>
+    <sys:String x:Key="Str_Msg_SettingsSaveFailed">Failed to save settings.</sys:String>
+    <sys:String x:Key="Str_Msg_StartupDisableFailed_Body">Failed to disable startup: {0}</sys:String>
+    <sys:String x:Key="Str_Msg_StartupEnableFailed_Body">Failed to enable startup: {0}</sys:String>
+    <sys:String x:Key="Str_Msg_SelectSessionFailed_Body">Error selecting session: {0}</sys:String>
+    <sys:String x:Key="Str_Msg_LoadOutputDevicesFailed_Body">Error loading output devices: {0}</sys:String>
+    <sys:String x:Key="Str_Msg_LoadInputDevicesFailed_Body">Error loading input devices: {0}</sys:String>
+    <sys:String x:Key="Str_Msg_LoadSessionsFailed_Body">Error loading audio sessions: {0}</sys:String>
+
+</ResourceDictionary>

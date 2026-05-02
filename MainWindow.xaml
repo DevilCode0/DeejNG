@@ -9,6 +9,7 @@
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
         mc:Ignorable="d"
         Title="DeejNG"
+        FlowDirection="{DynamicResource AppFlowDirection}"
         SizeToContent="WidthAndHeight"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -63,18 +64,18 @@
                                 HorizontalAlignment="Right" 
                                 VerticalAlignment="Center"
                                 Margin="8,0">
-                        <Button Content="—" 
-                                Style="{StaticResource IconButton}" 
-                                shell:WindowChrome.IsHitTestVisibleInChrome="True" 
-                                ToolTip="Minimize" 
-                                Click="MinButton_Click" 
+                        <Button Content="—"
+                                Style="{StaticResource IconButton}"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True"
+                                ToolTip="{DynamicResource Str_Btn_Minimize}"
+                                Click="MinButton_Click"
                                 Margin="4,0"
                                 VerticalAlignment="Center"/>
-<Button Content="✕" 
-                                Style="{StaticResource IconButton}" 
-                                shell:WindowChrome.IsHitTestVisibleInChrome="True" 
-                                ToolTip="Close" 
-                                Click="CloseButton_Click" 
+<Button Content="✕"
+                                Style="{StaticResource IconButton}"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True"
+                                ToolTip="{DynamicResource Str_Close}"
+                                Click="CloseButton_Click"
                                 Margin="4,0"
                                 VerticalAlignment="Center"/>
                     </StackPanel>
@@ -96,34 +97,34 @@
 
                     <!-- Left: Profile controls -->
                     <StackPanel Grid.Column="0" Orientation="Horizontal">
-                        <TextBlock Text="Profile:" Style="{StaticResource LabelTextBlock}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="{DynamicResource Str_Main_Profile}" Style="{StaticResource LabelTextBlock}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <ComboBox x:Name="ProfileSelector" Width="168" Margin="0,0,8,0"
                                   Style="{StaticResource ModernComboBox}"
                                   SelectionChanged="ProfileSelector_SelectionChanged"/>
                         <Button x:Name="NewProfileButton"
-                                Content="New"
+                                Content="{DynamicResource Str_New}"
                                 Style="{StaticResource ModernButton}"
                                 Click="NewProfile_Click"
-                                ToolTip="Create a new profile"
+                                ToolTip="{DynamicResource Str_Profile_New_Tooltip}"
                                 Margin="0,0,4,0"/>
                         <Button x:Name="RenameProfileButton"
-                                Content="Rename"
+                                Content="{DynamicResource Str_Rename}"
                                 Style="{StaticResource ModernButton}"
                                 Click="RenameProfile_Click"
-                                ToolTip="Rename profile"
+                                ToolTip="{DynamicResource Str_Profile_Rename_Tooltip}"
                                 Margin="0,0,4,0"/>
                         <Button x:Name="DeleteProfileButton"
-                                Content="Delete"
+                                Content="{DynamicResource Str_Delete}"
                                 Style="{StaticResource ModernButton}"
                                 Click="DeleteProfile_Click"
-                                ToolTip="Delete profile"/>
+                                ToolTip="{DynamicResource Str_Profile_Delete_Tooltip}"/>
                     </StackPanel>
 
                     <!-- Right: Theme selector and Settings button -->
                     <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
                         <ComboBox x:Name="ThemeSelector"
                                   Style="{StaticResource ModernComboBox}"
-                                  ToolTip="Select Theme"
+                                  ToolTip="{DynamicResource Str_Theme_Select}"
                                   Width="158"
                                   SelectionChanged="ThemeSelector_SelectionChanged"
                                   Margin="0,0,8,0">
@@ -136,7 +137,7 @@
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
-                        <Button x:Name="SettingsButton" Content="⚙" Style="{StaticResource IconButton}" Click="SettingsButton_Click" ToolTip="Settings"/>
+                        <Button x:Name="SettingsButton" Content="⚙" Style="{StaticResource IconButton}" Click="SettingsButton_Click" ToolTip="{DynamicResource Str_Settings_Tooltip}"/>
                     </StackPanel>
 
                     <!-- Keep hidden COM controls for backend logic -->
@@ -206,7 +207,7 @@
                     Padding="12,8"
                     Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="Physical Buttons:"
+                    <TextBlock Text="{DynamicResource Str_Main_PhysicalButtons}"
                                Style="{StaticResource SubtitleTextBlock}"
                                VerticalAlignment="Center"
                                Margin="0,0,12,0"/>
@@ -247,48 +248,48 @@
                         MinWidth="220">
                     <StackPanel>
                         <TextBlock x:Name="PopupHeader"
-                                   Text="Configure Button"
+                                   Text="{DynamicResource Str_Popup_Header}"
                                    Style="{StaticResource SubtitleTextBlock}"
                                    FontWeight="SemiBold"
                                    Margin="0,0,0,10"/>
-                        <TextBlock Text="Action:"
+                        <TextBlock Text="{DynamicResource Str_Popup_Action}"
                                    Style="{StaticResource SubtitleTextBlock}"
                                    Margin="0,0,0,4"/>
                         <ComboBox x:Name="PopupActionCombo"
                                   Style="{StaticResource ModernComboBox}"
                                   Margin="0,0,0,10"
                                   SelectionChanged="PopupActionCombo_SelectionChanged">
-                            <ComboBoxItem Content="None"/>
-                            <ComboBoxItem Content="Media Play/Pause"/>
-                            <ComboBoxItem Content="Media Next"/>
-                            <ComboBoxItem Content="Media Previous"/>
-                            <ComboBoxItem Content="Media Stop"/>
-                            <ComboBoxItem Content="Mute Channel"/>
-                            <ComboBoxItem Content="Global Mute"/>
-                            <ComboBoxItem Content="Keyboard Shortcut"/>
+                            <ComboBoxItem Content="{DynamicResource Str_Action_None}"/>
+                            <ComboBoxItem Content="{DynamicResource Str_Action_PlayPause}"/>
+                            <ComboBoxItem Content="{DynamicResource Str_Action_Next}"/>
+                            <ComboBoxItem Content="{DynamicResource Str_Action_Previous}"/>
+                            <ComboBoxItem Content="{DynamicResource Str_Action_Stop}"/>
+                            <ComboBoxItem Content="{DynamicResource Str_Action_MuteChannel}"/>
+                            <ComboBoxItem Content="{DynamicResource Str_Action_GlobalMute}"/>
+                            <ComboBoxItem Content="{DynamicResource Str_Action_Shortcut}"/>
                         </ComboBox>
                         <StackPanel x:Name="PopupChannelPanel" Visibility="Collapsed" Margin="0,0,0,10">
-                            <TextBlock Text="Target Channel (1-based):"
+                            <TextBlock Text="{DynamicResource Str_Popup_TargetChannel}"
                                        Style="{StaticResource SubtitleTextBlock}"
                                        Margin="0,0,0,4"/>
                             <TextBox x:Name="PopupChannelText"
                                      PreviewTextInput="NumberValidation_PreviewTextInput"/>
                         </StackPanel>
                         <StackPanel x:Name="PopupKeyComboPanel" Visibility="Collapsed" Margin="0,0,0,10">
-                            <TextBlock Text="Key combo:"
+                            <TextBlock Text="{DynamicResource Str_Popup_KeyCombo}"
                                        Style="{StaticResource SubtitleTextBlock}"
                                        Margin="0,0,0,4"/>
                             <TextBox x:Name="PopupKeyComboText"
                                      IsReadOnly="True"
-                                     Text="(click here, then press a combo)"
+                                     Text="{DynamicResource Str_Popup_KeyComboPlaceholder}"
                                      PreviewKeyDown="PopupKeyComboText_PreviewKeyDown"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Content="Save"
+                            <Button Content="{DynamicResource Str_Save}"
                                     Style="{StaticResource ModernButton}"
                                     Margin="0,0,8,0"
                                     Click="PopupSave_Click"/>
-                            <Button Content="Cancel"
+                            <Button Content="{DynamicResource Str_Cancel}"
                                     Style="{StaticResource ModernButton}"
                                     Click="PopupCancel_Click"/>
                         </StackPanel>
@@ -314,19 +315,19 @@
                     Padding="24"
                     Visibility="Collapsed">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <TextBlock Text="Please connect your device"
+                    <TextBlock Text="{DynamicResource Str_Main_NoDevice}"
                                Style="{StaticResource SubtitleTextBlock}"
                                FontSize="18"
                                FontWeight="SemiBold"
                                HorizontalAlignment="Center"
                                Margin="0,0,0,8"/>
-                    <TextBlock Text="Plug in your DeejNG hardware over USB, then click Rescan."
+                    <TextBlock Text="{DynamicResource Str_Main_NoDeviceHint}"
                                Style="{StaticResource SubtitleTextBlock}"
                                FontSize="12"
                                HorizontalAlignment="Center"
                                Margin="0,0,0,16"/>
                     <Button x:Name="RescanButton"
-                            Content="Rescan for Device"
+                            Content="{DynamicResource Str_Btn_Rescan}"
                             Style="{StaticResource ModernButton}"
                             MinWidth="180"
                             HorizontalAlignment="Center"
@@ -355,14 +356,14 @@
                                 <Style TargetType="Ellipse">
                                     <Setter Property="Fill" Value="{DynamicResource ErrorBrush}"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ElementName=ConnectionStatus, Path=Text}" Value="Connected">
+                                        <DataTrigger Binding="{Binding ElementName=ConnectionStatus, Path=Tag}" Value="connected">
                                             <Setter Property="Fill" Value="{DynamicResource SuccessBrush}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </Ellipse.Style>
                         </Ellipse>
-                        <TextBlock x:Name="ConnectionStatus" Text="Disconnected" Style="{StaticResource SubtitleTextBlock}" FontSize="12"/>
+                        <TextBlock x:Name="ConnectionStatus" Text="{DynamicResource Str_Status_Disconnected}" Style="{StaticResource SubtitleTextBlock}" FontSize="12"/>
                     </StackPanel>
 
                     <!-- App version -->

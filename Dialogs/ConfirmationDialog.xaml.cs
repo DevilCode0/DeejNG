@@ -22,7 +22,7 @@ namespace DeejNG.Dialogs
             // If only showing OK, change Yes to OK and center the button panel
             if (!showNo && !showCancel)
             {
-                YesButton.Content = "OK";
+                YesButton.Content = Services.LocalizationManager.L("Str_OK");
                 ButtonPanel.HorizontalAlignment = HorizontalAlignment.Center;
             }
         }

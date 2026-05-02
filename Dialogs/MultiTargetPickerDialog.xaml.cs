@@ -239,7 +239,7 @@ namespace DeejNG.Dialogs
             catch (System.Exception ex)
             {
                 // Show a message box on failure, e.g. if device enumeration fails
-                MessageBox.Show($"Error loading output devices: {ex.Message}", "Error",
+                MessageBox.Show(LocalizationManager.L("Str_Msg_LoadOutputDevicesFailed_Body", ex.Message), LocalizationManager.L("Str_Msg_Error_Title"),
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -287,7 +287,7 @@ namespace DeejNG.Dialogs
             catch (System.Exception ex)
             {
                 // Display an error dialog if device enumeration fails
-                MessageBox.Show($"Error loading input devices: {ex.Message}", "Error",
+                MessageBox.Show(LocalizationManager.L("Str_Msg_LoadInputDevicesFailed_Body", ex.Message), LocalizationManager.L("Str_Msg_Error_Title"),
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -436,7 +436,7 @@ namespace DeejNG.Dialogs
             catch (System.Exception ex)
             {
                 // Show error message if the entire session loading process fails
-                MessageBox.Show($"Error loading audio sessions: {ex.Message}", "Error",
+                MessageBox.Show(LocalizationManager.L("Str_Msg_LoadSessionsFailed_Body", ex.Message), LocalizationManager.L("Str_Msg_Error_Title"),
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

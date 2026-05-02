@@ -1,5 +1,6 @@
 ﻿using DeejNG.Classes;
 using DeejNG.Models;
+using DeejNG.Services;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
@@ -54,7 +55,8 @@ namespace DeejNG.Dialogs
             TimeoutSlider.Value = _settings.OverlayTimeoutSeconds;
             ExponentialVolumeFactorSlider.Value = _settings.ExponentialVolumeFactor;
 
-            SetTextColorSelection(_settings.OverlayTextColor); // Set ComboBox for text color
+            SetTextColorSelection(_settings.OverlayTextColor);
+            SetLanguageSelection(_settings.Language ?? LocalizationManager.Instance.CurrentLanguage);
 
             // Initialize general toggles from main window state (hidden controls)
             if (_mainWindow != null)
@@ -90,6 +92,9 @@ namespace DeejNG.Dialogs
                 // Initialize exclusion list from settings
                 InitializeExcludedAppsList();
             }
+
+            // Wire language ComboBox for live switching
+            LanguageComboBox.SelectionChanged += LanguageComboBox_SelectionChanged;
 
             // Wire up real-time control events
             OpacitySlider.ValueChanged += OpacitySlider_ValueChanged;
@@ -407,6 +412,9 @@ namespace DeejNG.Dialogs
 
             // Save selected overlay text color (e.g., Auto, White, Black)
             _settings.OverlayTextColor = GetTextColorFromSelection();
+
+            // Save selected language
+            _settings.Language = GetLanguageFromSelection();
             if (BaudRateComboBox.SelectedItem is ComboBoxItem item &&
                 int.TryParse(item.Content?.ToString(), out int baud))
             {
@@ -447,6 +455,28 @@ namespace DeejNG.Dialogs
         /// Falls back to "Auto" if the input is invalid or not recognized.
         /// </summary>
         /// <param name="textColor">The string representation of the text color (e.g., "Auto", "White", "Black").</param>
+        private string GetLanguageFromSelection()
+        {
+            return LanguageComboBox.SelectedIndex switch
+            {
+                1 => "ar",
+                _ => "en"
+            };
+        }
+
+        private void SetLanguageSelection(string language)
+        {
+            LanguageComboBox.SelectedIndex = language == "ar" ? 1 : 0;
+        }
+
+        private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string lang = GetLanguageFromSelection();
+            LocalizationManager.Instance.SetLanguage(lang);
+            if (_settings != null)
+                _settings.Language = lang;
+        }
+
         private void SetTextColorSelection(string textColor)
         {
             // Attempt to parse the input string into a valid enum value of type TextColorOption (case-insensitive)

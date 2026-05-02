@@ -1,4 +1,5 @@
 ﻿using DeejNG.Classes; // Add this for AudioUtilities
+using DeejNG.Services;
 using NAudio.CoreAudioApi;
 using System.Diagnostics;
 using System.Windows;
@@ -217,7 +218,7 @@ namespace DeejNG.Dialogs
             {
                 // Log and show any unexpected error
                 Debug.WriteLine($"[SessionPicker] Error in Ok_Click: {ex.Message}");
-                MessageBox.Show($"Error selecting session: {ex.Message}", "Selection Error",
+                MessageBox.Show(LocalizationManager.L("Str_Msg_SelectSessionFailed_Body", ex.Message), LocalizationManager.L("Str_Msg_Error_Title"),
                                 MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }

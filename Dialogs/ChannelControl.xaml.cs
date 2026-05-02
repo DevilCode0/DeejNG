@@ -1,5 +1,6 @@
 ﻿using DeejNG.Models;
 using DeejNG.Classes;
+using DeejNG.Services;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -205,7 +206,7 @@ namespace DeejNG.Dialogs
 
                 // Visual indicator
                 TargetTextBox.Foreground = TryFindResource("TextSecondaryBrush") as Brush ?? Brushes.Gray;
-                TargetTextBox.ToolTip = $"{TargetTextBox.Text} (Expired)";
+                TargetTextBox.ToolTip = LocalizationManager.L("Str_Channel_Expired", TargetTextBox.Text);
             }
         }
 

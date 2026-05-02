@@ -153,6 +153,9 @@ namespace DeejNG.Services
                 // Persist the selected theme with the profile settings
                 SelectedTheme = AppSettings.SelectedTheme,
 
+                // Persist language setting
+                Language = AppSettings.Language,
+
                 // Preserve excluded apps for unmapped applications
                 ExcludedFromUnmapped = AppSettings.ExcludedFromUnmapped ?? new List<string>()
             };

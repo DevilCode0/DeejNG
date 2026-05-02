@@ -2,6 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Input Dialog"
+        FlowDirection="{DynamicResource AppFlowDirection}"
         Height="260" Width="450"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -46,13 +47,13 @@
             <!-- Content -->
             <StackPanel Grid.Row="1" Margin="20,20,20,40">
                 <TextBlock x:Name="PromptTextBlock"
-                       Text="Enter value:"
+                       Text="{DynamicResource Str_InputDialog_DefaultPrompt}"
                        Style="{StaticResource LabelTextBlock}"
                        Margin="0,0,0,12"
                        TextWrapping="Wrap"/>
 
                 <TextBox x:Name="InputTextBox"
-                     ToolTip="Enter text here"
+                     ToolTip="{DynamicResource Str_InputDialog_DefaultTooltip}"
                      Background="{DynamicResource SurfaceBrush}"
                      Foreground="{DynamicResource TextPrimaryBrush}"
                      BorderBrush="{DynamicResource BorderBrush}"
@@ -69,13 +70,13 @@
                 CornerRadius="0,0,8,8"
                 Padding="20,12" Margin="0,107,0,-28" Grid.RowSpan="2">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Content="OK"
+                    <Button Content="{DynamicResource Str_OK}"
                         IsDefault="True"
                         Style="{StaticResource ModernButton}"
                         Click="OkButton_Click"
                         Margin="0,0,10,0"
                         Width="80"/>
-                    <Button Content="Cancel"
+                    <Button Content="{DynamicResource Str_Cancel}"
                         IsCancel="True"
                         Style="{StaticResource ModernButton}"
                         Click="CancelButton_Click"

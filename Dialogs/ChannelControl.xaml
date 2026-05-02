@@ -51,7 +51,7 @@
                 <Trigger Property="IsChecked" Value="True">
                     <Setter Property="Background" Value="#D13438" />
                     <Setter Property="Foreground" Value="White" />
-                    <Setter Property="Content" Value="Unmute" />
+                    <Setter Property="Content" Value="{DynamicResource Str_Channel_Unmute}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -136,7 +136,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Border Style="{StaticResource Card}" Margin="6,6,6,0">
+    <Border Style="{StaticResource Card}" Margin="6,6,6,0" FlowDirection="LeftToRight">
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
 
             <TextBlock x:Name="TargetTextBox"

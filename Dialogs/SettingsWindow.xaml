@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
-        Title="Settings" Height="806" Width="900"
+        Title="{DynamicResource Str_Settings_Title}" Height="860" Width="900"
+        FlowDirection="{DynamicResource AppFlowDirection}"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -35,18 +36,18 @@
 
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
                     <TextBlock Text="⚙" FontSize="24" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                    <TextBlock Text="Settings" Style="{StaticResource TitleTextBlock}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{DynamicResource Str_Settings_Title}" Style="{StaticResource TitleTextBlock}" VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <Button Grid.Column="2" Content="✕" Style="{StaticResource IconButton}" 
-                        shell:WindowChrome.IsHitTestVisibleInChrome="True" 
-                        ToolTip="Close" Click="CloseButton_Click" Margin="8,0"/>
+                <Button Grid.Column="2" Content="✕" Style="{StaticResource IconButton}"
+                        shell:WindowChrome.IsHitTestVisibleInChrome="True"
+                        ToolTip="{DynamicResource Str_Close}" Click="CloseButton_Click" Margin="8,0"/>
             </Grid>
         </Border>
 
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="20,10">
-            <Button Content="Save" Style="{StaticResource ModernButton}" Click="Save_Click" Margin="0,0,10,0"/>
-            <Button Content="Cancel" Style="{StaticResource ModernButton}" Click="Cancel_Click"/>
+            <Button Content="{DynamicResource Str_Save}" Style="{StaticResource ModernButton}" Click="Save_Click" Margin="0,0,10,0"/>
+            <Button Content="{DynamicResource Str_Cancel}" Style="{StaticResource ModernButton}" Click="Cancel_Click"/>
         </StackPanel>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -63,27 +64,43 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0" Grid.Column="0">
-                    <TextBlock Text="General" Style="{StaticResource TitleTextBlock}" FontSize="18" Margin="0,0,0,16"/>
-                    <Border Style="{StaticResource Card}" Padding="20" Margin="0,0,0,20" Height="227">
+                    <TextBlock Text="{DynamicResource Str_Settings_General}" Style="{StaticResource TitleTextBlock}" FontSize="18" Margin="0,0,0,16"/>
+                    <Border Style="{StaticResource Card}" Padding="20" Margin="0,0,0,20">
                         <StackPanel>
-                            <CheckBox x:Name="SettingInvertSliders" Content="Invert Sliders" Margin="0,0,0,12"
+                            <!-- Language selector -->
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{DynamicResource Str_Settings_Language_Label}" Style="{StaticResource LabelTextBlock}" VerticalAlignment="Center" Width="130"/>
+                                <ComboBox Grid.Column="1" x:Name="LanguageComboBox"
+                                          Style="{StaticResource ModernComboBox}"
+                                          HorizontalAlignment="Left"
+                                          Width="200"
+                                          FlowDirection="LeftToRight">
+                                    <ComboBoxItem Content="English" Tag="en"/>
+                                    <ComboBoxItem Content="العربية" Tag="ar"/>
+                                </ComboBox>
+                            </Grid>
+                            <CheckBox x:Name="SettingInvertSliders" Content="{DynamicResource Str_Settings_InvertSliders}" Margin="0,0,0,12"
                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
-                            <CheckBox x:Name="SettingShowMeters" Content="Show Meters" Margin="0,0,0,12"
+                            <CheckBox x:Name="SettingShowMeters" Content="{DynamicResource Str_Settings_ShowMeters}" Margin="0,0,0,12"
                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
-                            <CheckBox x:Name="SettingStartOnBoot" Content="Start on boot" Margin="0,0,0,12"
+                            <CheckBox x:Name="SettingStartOnBoot" Content="{DynamicResource Str_Settings_StartOnBoot}" Margin="0,0,0,12"
                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
-                            <CheckBox x:Name="SettingStartMinimized" Content="Start minimized" Margin="0,0,0,12"
+                            <CheckBox x:Name="SettingStartMinimized" Content="{DynamicResource Str_Settings_StartMinimized}" Margin="0,0,0,12"
                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
-                            <CheckBox x:Name="SettingDisableSmoothing" Content="Disable Smoothing" Margin="0,0,0,12"
+                            <CheckBox x:Name="SettingDisableSmoothing" Content="{DynamicResource Str_Settings_DisableSmoothing}" Margin="0,0,0,12"
                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
-                            <CheckBox x:Name="SettingUseExponentialVolume" Content="Use Exponential Volume" Margin="0,0,0,12"
+                            <CheckBox x:Name="SettingUseExponentialVolume" Content="{DynamicResource Str_Settings_UseExpVolume}" Margin="0,0,0,12"
                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
                             <Grid Margin="0,0,0,16">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Exp. Volume Factor" Style="{StaticResource LabelTextBlock}" VerticalAlignment="Center" Width="130"/>
+                                <TextBlock Text="{DynamicResource Str_Settings_ExpFactor}" Style="{StaticResource LabelTextBlock}" VerticalAlignment="Center" Width="130"/>
                                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                                     <Slider x:Name="ExponentialVolumeFactorSlider" Minimum="1.5" Maximum="10.0" Width="180" TickFrequency="0.1" IsSnapToTickEnabled="True" VerticalAlignment="Center"/>
                                     <TextBlock Text="{Binding ElementName=ExponentialVolumeFactorSlider, Path=Value, StringFormat={}{0:F1}}" Margin="10,0,0,0" VerticalAlignment="Center" Style="{StaticResource SubtitleTextBlock}"/>
@@ -92,18 +109,19 @@
                         </StackPanel>
                     </Border>
 
-                    <TextBlock Text="Serial Connection" Style="{StaticResource TitleTextBlock}" FontSize="18" Margin="0,0,0,16"/>
+                    <TextBlock Text="{DynamicResource Str_Settings_Serial}" Style="{StaticResource TitleTextBlock}" FontSize="18" Margin="0,0,0,16"/>
                     <Border Style="{StaticResource Card}" Padding="20" Margin="0,0,0,20">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                <TextBlock Text="COM Port:" Style="{StaticResource LabelTextBlock}" VerticalAlignment="Center" Width="80"/>
+                                <TextBlock Text="{DynamicResource Str_Settings_ComPort}" Style="{StaticResource LabelTextBlock}" VerticalAlignment="Center" Width="80"/>
                                 <ComboBox x:Name="SettingComPortSelector" Width="160" Margin="0,0,8,0"
                                           Style="{StaticResource ModernComboBox}"
+                                          FlowDirection="LeftToRight"
                                           DropDownOpened="SettingComPortSelector_DropDownOpened"/>
-                                <Button x:Name="SettingConnectButton" Content="Connect" Style="{StaticResource ModernButton}" Click="SettingConnect_Click"/>
+                                <Button x:Name="SettingConnectButton" Content="{DynamicResource Str_Btn_Connect}" Style="{StaticResource ModernButton}" Click="SettingConnect_Click"/>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Baud Rate:" Style="{StaticResource LabelTextBlock}" VerticalAlignment="Center" Width="80"/>
+                                <TextBlock Text="{DynamicResource Str_Settings_BaudRate}" Style="{StaticResource LabelTextBlock}" VerticalAlignment="Center" Width="80"/>
                                 <ComboBox x:Name="BaudRateComboBox" Width="160" Style="{StaticResource ModernComboBox}">
                                     <ComboBoxItem Content="9600"/>
                                     <ComboBoxItem Content="19200"/>
@@ -117,10 +135,10 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="0" Grid.Column="2" Grid.RowSpan="2">
-                    <TextBlock Text="Overlay" Style="{StaticResource TitleTextBlock}" FontSize="18" Margin="0,0,0,16"/>
+                    <TextBlock Text="{DynamicResource Str_Settings_Overlay}" Style="{StaticResource TitleTextBlock}" FontSize="18" Margin="0,0,0,16"/>
                     <Border Style="{StaticResource Card}" Padding="20" Margin="0,0,0,20">
                         <StackPanel>
-                            <CheckBox x:Name="OverlayEnabledCheckBox" Content="Enable Overlay" Margin="0,0,0,16"
+                            <CheckBox x:Name="OverlayEnabledCheckBox" Content="{DynamicResource Str_Settings_EnableOverlay}" Margin="0,0,0,16"
                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
 
                             <Grid Margin="0,0,0,16">
@@ -128,14 +146,14 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Opacity" Style="{StaticResource LabelTextBlock}" VerticalAlignment="Center" Width="80"/>
+                                <TextBlock Text="{DynamicResource Str_Settings_Opacity}" Style="{StaticResource LabelTextBlock}" VerticalAlignment="Center" Width="80"/>
                                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                    <Slider x:Name="OpacitySlider" Minimum="0.0" Maximum="1.0" Width="180" TickFrequency="0.05" IsSnapToTickEnabled="True" VerticalAlignment="Center"/>
+                                    <Slider x:Name="OpacitySlider" Minimum="0.0" Maximum="1.0" Width="180" TickFrequency="0.05" IsSnapToTickEnabled="True" VerticalAlignment="Center" FlowDirection="LeftToRight"/>
                                     <TextBlock Text="{Binding ElementName=OpacitySlider, Path=Value, StringFormat={}{0:P0}}" Margin="10,0,0,0" VerticalAlignment="Center" Style="{StaticResource SubtitleTextBlock}"/>
                                 </StackPanel>
                             </Grid>
 
-                            <CheckBox x:Name="AutoCloseCheckBox" Content="Auto-Close Overlay" Margin="0,0,0,16"
+                            <CheckBox x:Name="AutoCloseCheckBox" Content="{DynamicResource Str_Settings_AutoClose}" Margin="0,0,0,16"
                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
 
                             <Grid Margin="0,0,0,16" IsEnabled="{Binding IsChecked, ElementName=AutoCloseCheckBox}">
@@ -143,9 +161,9 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Timeout (s)" Style="{StaticResource LabelTextBlock}" VerticalAlignment="Center" Width="80"/>
+                                <TextBlock Text="{DynamicResource Str_Settings_Timeout}" Style="{StaticResource LabelTextBlock}" VerticalAlignment="Center" Width="80"/>
                                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                    <Slider x:Name="TimeoutSlider" Minimum="1" Maximum="15" Width="180" TickFrequency="1" IsSnapToTickEnabled="True" VerticalAlignment="Center"/>
+                                    <Slider x:Name="TimeoutSlider" Minimum="1" Maximum="15" Width="180" TickFrequency="1" IsSnapToTickEnabled="True" VerticalAlignment="Center" FlowDirection="LeftToRight"/>
                                     <TextBlock Text="{Binding ElementName=TimeoutSlider, Path=Value}" Margin="10,0,0,0" VerticalAlignment="Center" Style="{StaticResource SubtitleTextBlock}"/>
                                 </StackPanel>
                             </Grid>
@@ -155,23 +173,23 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="Text Color" Style="{StaticResource LabelTextBlock}" VerticalAlignment="Center" Width="80"/>
-                                <ComboBox Grid.Column="1" x:Name="TextColorComboBox" 
+                                <TextBlock Text="{DynamicResource Str_Settings_TextColor}" Style="{StaticResource LabelTextBlock}" VerticalAlignment="Center" Width="80"/>
+                                <ComboBox Grid.Column="1" x:Name="TextColorComboBox"
                                           Style="{StaticResource ModernComboBox}"
                                           HorizontalAlignment="Left"
                                           Width="200"
-                                          ToolTip="Choose text color: Auto detects background, White/Black forces specific color">
-                                    <ComboBoxItem Content="Auto (Smart Contrast)"/>
-                                    <ComboBoxItem Content="White Text"/>
-                                    <ComboBoxItem Content="Black Text"/>
+                                          ToolTip="{DynamicResource Str_Settings_TextColorTooltip}">
+                                    <ComboBoxItem Content="{DynamicResource Str_Settings_ColorAuto}"/>
+                                    <ComboBoxItem Content="{DynamicResource Str_Settings_ColorWhite}"/>
+                                    <ComboBoxItem Content="{DynamicResource Str_Settings_ColorBlack}"/>
                                 </ComboBox>
                             </Grid>
                         </StackPanel>
                     </Border>
-                    <TextBlock Text="Unmapped Exclusions" Style="{StaticResource TitleTextBlock}" FontSize="18"/>
+                    <TextBlock Text="{DynamicResource Str_Settings_Unmapped}" Style="{StaticResource TitleTextBlock}" FontSize="18"/>
                     <Border Style="{StaticResource Card}" Padding="20">
                         <StackPanel>
-                            <TextBlock Text="Apps excluded from 'Unmapped Applications' control:"
+                            <TextBlock Text="{DynamicResource Str_Settings_UnmappedApps}"
                                        Style="{StaticResource SubtitleTextBlock}"
                                        Margin="0,0,0,8"
                                        TextWrapping="Wrap"/>
@@ -187,11 +205,11 @@
                                           Margin="0,0,8,0"
                                           Style="{StaticResource ModernComboBox}"
                                           DropDownOpened="RunningAppsComboBox_DropDownOpened"/>
-                                <Button Content="Add"
+                                <Button Content="{DynamicResource Str_Add}"
                                         Style="{StaticResource ModernButton}"
                                         Click="AddExcludedApp_Click"
                                         Padding="12,4"/>
-                                <Button Content="Remove"
+                                <Button Content="{DynamicResource Str_Remove}"
                                         Style="{StaticResource ModernButton}"
                                         Click="RemoveExcludedApp_Click"
                                         Margin="8,0,0,0"

@@ -133,6 +133,11 @@ namespace DeejNG.Classes
         public string? SelectedTheme { get; set; } = "Dark";
 
         /// <summary>
+        /// Gets or sets the UI language code ("en" or "ar"). Null triggers auto-detect on first launch.
+        /// </summary>
+        public string? Language { get; set; }
+
+        /// <summary>
         /// Gets or sets the number of physical buttons connected to the controller.
         /// Default is 0 (no buttons).
         /// </summary>

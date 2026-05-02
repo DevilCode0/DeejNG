@@ -1,0 +1,173 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+
+    <!-- Layout direction -->
+    <FlowDirection x:Key="AppFlowDirection">RightToLeft</FlowDirection>
+
+    <!-- Universal buttons -->
+    <sys:String x:Key="Str_Save">حفظ</sys:String>
+    <sys:String x:Key="Str_Cancel">إلغاء</sys:String>
+    <sys:String x:Key="Str_OK">موافق</sys:String>
+    <sys:String x:Key="Str_Delete">حذف</sys:String>
+    <sys:String x:Key="Str_Add">إضافة</sys:String>
+    <sys:String x:Key="Str_Remove">إزالة</sys:String>
+    <sys:String x:Key="Str_Close">إغلاق</sys:String>
+    <sys:String x:Key="Str_Yes">نعم</sys:String>
+    <sys:String x:Key="Str_No">لا</sys:String>
+    <sys:String x:Key="Str_New">جديد</sys:String>
+    <sys:String x:Key="Str_Rename">إعادة تسمية</sys:String>
+
+    <!-- MainWindow -->
+    <sys:String x:Key="Str_Main_Profile">الملف الشخصي:</sys:String>
+    <sys:String x:Key="Str_Main_PhysicalButtons">الأزرار المادية:</sys:String>
+    <sys:String x:Key="Str_Main_NoDevice">يرجى توصيل جهازك</sys:String>
+    <sys:String x:Key="Str_Main_NoDeviceHint">قم بتوصيل جهاز DeejNG عبر USB، ثم اضغط على إعادة الفحص.</sys:String>
+    <sys:String x:Key="Str_Btn_Minimize">تصغير</sys:String>
+    <sys:String x:Key="Str_Btn_Connect">اتصال</sys:String>
+    <sys:String x:Key="Str_Btn_Disconnect">قطع الاتصال</sys:String>
+    <sys:String x:Key="Str_Btn_Connecting">جارٍ الاتصال...</sys:String>
+    <sys:String x:Key="Str_Btn_Rescan">إعادة فحص الجهاز</sys:String>
+    <sys:String x:Key="Str_Btn_Scanning">جارٍ الفحص...</sys:String>
+    <sys:String x:Key="Str_Theme_Select">اختيار المظهر</sys:String>
+    <sys:String x:Key="Str_Settings_Tooltip">الإعدادات</sys:String>
+    <sys:String x:Key="Str_Profile_New_Tooltip">إنشاء ملف شخصي جديد</sys:String>
+    <sys:String x:Key="Str_Profile_Rename_Tooltip">إعادة تسمية الملف الشخصي</sys:String>
+    <sys:String x:Key="Str_Profile_Delete_Tooltip">حذف الملف الشخصي</sys:String>
+
+    <!-- Popup (button action picker) -->
+    <sys:String x:Key="Str_Popup_Header">تهيئة الزر</sys:String>
+    <sys:String x:Key="Str_Popup_Action">الإجراء:</sys:String>
+    <sys:String x:Key="Str_Popup_TargetChannel">القناة المستهدفة (تبدأ من 1):</sys:String>
+    <sys:String x:Key="Str_Popup_KeyCombo">تركيبة المفاتيح:</sys:String>
+    <sys:String x:Key="Str_Popup_KeyComboPlaceholder">(انقر هنا ثم اضغط تركيبة)</sys:String>
+
+    <!-- Connection status (code-behind) -->
+    <sys:String x:Key="Str_Status_Connected">متصل بـ {0}</sys:String>
+    <sys:String x:Key="Str_Status_Verifying">جارٍ التحقق من {0}...</sys:String>
+    <sys:String x:Key="Str_Status_Reconnecting">غير متصل - جارٍ إعادة الاتصال...</sys:String>
+    <sys:String x:Key="Str_Status_Disconnected">غير متصل</sys:String>
+    <sys:String x:Key="Str_Status_Attempting">جارٍ محاولة إعادة الاتصال...</sys:String>
+    <sys:String x:Key="Str_Status_Waiting">في انتظار الجهاز...</sys:String>
+    <sys:String x:Key="Str_Status_Scanning">جارٍ فحص {0}...</sys:String>
+    <sys:String x:Key="Str_Status_ScanningPorts">جارٍ فحص منافذ COM...</sys:String>
+    <sys:String x:Key="Str_Status_Failed">فشل الاتصال - يرجى فحص المنافذ يدوياً</sys:String>
+
+    <!-- Tray menu -->
+    <sys:String x:Key="Str_Tray_ShowHide">إظهار/إخفاء</sys:String>
+    <sys:String x:Key="Str_Tray_Exit">خروج</sys:String>
+
+    <!-- Theme names -->
+    <sys:String x:Key="Str_Theme_Dark">داكن</sys:String>
+    <sys:String x:Key="Str_Theme_Light">فاتح</sys:String>
+
+    <!-- Button actions (combo box items) -->
+    <sys:String x:Key="Str_Action_None">بلا</sys:String>
+    <sys:String x:Key="Str_Action_PlayPause">تشغيل/إيقاف مؤقت</sys:String>
+    <sys:String x:Key="Str_Action_Next">التالي</sys:String>
+    <sys:String x:Key="Str_Action_Previous">السابق</sys:String>
+    <sys:String x:Key="Str_Action_Stop">إيقاف</sys:String>
+    <sys:String x:Key="Str_Action_MuteChannel">كتم القناة</sys:String>
+    <sys:String x:Key="Str_Action_GlobalMute">كتم شامل</sys:String>
+    <sys:String x:Key="Str_Action_Shortcut">اختصار لوحة المفاتيح</sys:String>
+
+    <!-- Channel control -->
+    <sys:String x:Key="Str_Channel_Unmute">إلغاء الكتم</sys:String>
+    <sys:String x:Key="Str_Channel_Expired">{0} (منتهي)</sys:String>
+
+    <!-- Settings window -->
+    <sys:String x:Key="Str_Settings_Title">الإعدادات</sys:String>
+    <sys:String x:Key="Str_Settings_General">عام</sys:String>
+    <sys:String x:Key="Str_Settings_Serial">الاتصال التسلسلي</sys:String>
+    <sys:String x:Key="Str_Settings_Overlay">الطبقة العلوية</sys:String>
+    <sys:String x:Key="Str_Settings_Unmapped">استثناءات غير المعيّنة</sys:String>
+    <sys:String x:Key="Str_Settings_Language">اللغة</sys:String>
+    <sys:String x:Key="Str_Settings_InvertSliders">عكس المنزلقات</sys:String>
+    <sys:String x:Key="Str_Settings_ShowMeters">إظهار العدادات</sys:String>
+    <sys:String x:Key="Str_Settings_StartOnBoot">البدء مع النظام</sys:String>
+    <sys:String x:Key="Str_Settings_StartMinimized">البدء مصغّراً</sys:String>
+    <sys:String x:Key="Str_Settings_DisableSmoothing">تعطيل التنعيم</sys:String>
+    <sys:String x:Key="Str_Settings_UseExpVolume">استخدام منحنى الصوت الأسّي</sys:String>
+    <sys:String x:Key="Str_Settings_ExpFactor">معامل الحجم الأسّي</sys:String>
+    <sys:String x:Key="Str_Settings_ComPort">منفذ COM:</sys:String>
+    <sys:String x:Key="Str_Settings_BaudRate">معدل الباود:</sys:String>
+    <sys:String x:Key="Str_Settings_EnableOverlay">تفعيل الطبقة العلوية</sys:String>
+    <sys:String x:Key="Str_Settings_Opacity">الشفافية</sys:String>
+    <sys:String x:Key="Str_Settings_AutoClose">إغلاق الطبقة تلقائياً</sys:String>
+    <sys:String x:Key="Str_Settings_Timeout">وقت الانتظار (ث)</sys:String>
+    <sys:String x:Key="Str_Settings_TextColor">لون النص</sys:String>
+    <sys:String x:Key="Str_Settings_TextColorTooltip">اختر لون النص: تلقائي يكشف الخلفية، أبيض/أسود يفرض لوناً محدداً</sys:String>
+    <sys:String x:Key="Str_Settings_ColorAuto">تلقائي (تباين ذكي)</sys:String>
+    <sys:String x:Key="Str_Settings_ColorWhite">نص أبيض</sys:String>
+    <sys:String x:Key="Str_Settings_ColorBlack">نص أسود</sys:String>
+    <sys:String x:Key="Str_Settings_UnmappedApps">التطبيقات المستثناة من التحكم في 'التطبيقات غير المعيّنة':</sys:String>
+    <sys:String x:Key="Str_Settings_Language_Label">اللغة</sys:String>
+
+    <!-- Button Settings dialog -->
+    <sys:String x:Key="Str_BtnSettings_Title">إعدادات الأزرار المادية</sys:String>
+    <sys:String x:Key="Str_BtnSettings_Section">الأزرار المادية (تجريبي)</sys:String>
+    <sys:String x:Key="Str_BtnSettings_Configure">قم بتهيئة الأزرار المادية على وحدة التحكم</sys:String>
+    <sys:String x:Key="Str_BtnSettings_AutoDetect">ℹ️ يتم الكشف التلقائي عن الأزرار من Arduino.</sys:String>
+    <sys:String x:Key="Str_BtnSettings_Send">أرسل 10000 (إيقاف) أو 10001 (تشغيل) لكل زر بعد قيم المنزلقات.</sys:String>
+    <sys:String x:Key="Str_BtnSettings_Example">مثال: 512|768|400|10000|10001 (3 منزلقات + 2 زر)</sys:String>
+    <sys:String x:Key="Str_BtnSettings_TargetChannel">القناة المستهدفة (تبدأ من 1)</sys:String>
+    <sys:String x:Key="Str_BtnSettings_Shortcut">الاختصار:</sys:String>
+    <sys:String x:Key="Str_BtnSettings_ShortcutTooltip">انقر هنا واضغط تركيبة المفاتيح (مثال: Ctrl+C)</sys:String>
+
+    <!-- MultiTargetPickerDialog -->
+    <sys:String x:Key="Str_MultiTarget_Title">اختيار التطبيقات</sys:String>
+    <sys:String x:Key="Str_MultiTarget_Instruction">اختر الأهداف لهذا المنزلق</sys:String>
+    <sys:String x:Key="Str_MultiTarget_Note">ملاحظة: يمكنك اختيار عناصر متعددة لكن يجب أن تكون من نفس الفئة. التطبيقات المعيّنة لمنزلقات أخرى مميّزة ولا يمكن اختيارها.</sys:String>
+    <sys:String x:Key="Str_MultiTarget_ManualEntry">تحديد التطبيق يدوياً</sys:String>
+    <sys:String x:Key="Str_MultiTarget_ManualHint">أدخل اسم التطبيق (أو أسماء مفصولة بفاصلة). يمكنك استخدام أسماء جزئية (مثال: 'spotify' أو 'spotify.exe').</sys:String>
+    <sys:String x:Key="Str_MultiTarget_ManualTooltip">مثال: chrome, firefox, spotify</sys:String>
+    <sys:String x:Key="Str_MultiTarget_ManualNote">ستُضاف هذه التطبيقات حتى لو لم تكن تعمل حالياً.</sys:String>
+    <sys:String x:Key="Str_MultiTarget_AppGroup">التطبيقات</sys:String>
+    <sys:String x:Key="Str_MultiTarget_InputGroup">أجهزة الإدخال</sys:String>
+    <sys:String x:Key="Str_MultiTarget_OutputGroup">أجهزة الإخراج</sys:String>
+
+    <!-- SessionPickerDialog -->
+    <sys:String x:Key="Str_SessionPicker_Title">اختيار الجلسة</sys:String>
+
+    <!-- InputDialog -->
+    <sys:String x:Key="Str_InputDialog_DefaultPrompt">أدخل القيمة:</sys:String>
+    <sys:String x:Key="Str_InputDialog_DefaultTooltip">أدخل النص هنا</sys:String>
+
+    <!-- ConfirmationDialog -->
+    <sys:String x:Key="Str_Confirm_DefaultMessage">هل أنت متأكد؟</sys:String>
+
+    <!-- Message strings (code-behind) -->
+    <sys:String x:Key="Str_Msg_CannotDelete_Title">لا يمكن الحذف</sys:String>
+    <sys:String x:Key="Str_Msg_CannotDeleteLast_Body">لا يمكن حذف الملف الشخصي الأخير. يجب أن يوجد ملف شخصي واحد على الأقل.</sys:String>
+    <sys:String x:Key="Str_Msg_DeleteProfile_Title">تأكيد الحذف</sys:String>
+    <sys:String x:Key="Str_Msg_DeleteProfile_Body">هل أنت متأكد من حذف الملف الشخصي '{0}'?&#x0a;&#x0a;لا يمكن التراجع عن هذا الإجراء.</sys:String>
+    <sys:String x:Key="Str_Msg_Success_Title">نجاح</sys:String>
+    <sys:String x:Key="Str_Msg_Error_Title">خطأ</sys:String>
+    <sys:String x:Key="Str_Msg_DeleteProfileSuccess_Body">تم حذف الملف الشخصي '{0}' بنجاح.</sys:String>
+    <sys:String x:Key="Str_Msg_DeleteProfileFailed_Body">فشل حذف الملف الشخصي '{0}'.</sys:String>
+    <sys:String x:Key="Str_Msg_ProfileError_Body">خطأ: {0}</sys:String>
+    <sys:String x:Key="Str_Msg_NewProfile_Title">ملف شخصي جديد</sys:String>
+    <sys:String x:Key="Str_Msg_NewProfile_Body">أدخل اسماً للملف الشخصي الجديد:</sys:String>
+    <sys:String x:Key="Str_Msg_CopySettings_Title">نسخ الإعدادات؟</sys:String>
+    <sys:String x:Key="Str_Msg_CopySettings_Body">هل تريد نسخ إعدادات الملف الشخصي الحالي إلى الملف الجديد?&#x0a;&#x0a;نعم: نسخ الإعدادات الحالية&#x0a;لا: البدء بالإعدادات الافتراضية&#x0a;إلغاء: عدم إنشاء ملف شخصي</sys:String>
+    <sys:String x:Key="Str_Msg_CreateProfileSuccess_Body">تم إنشاء الملف الشخصي '{0}' بنجاح!</sys:String>
+    <sys:String x:Key="Str_Msg_CreateProfileFailed_Body">فشل إنشاء الملف الشخصي '{0}'. ربما يوجد ملف بهذا الاسم بالفعل.</sys:String>
+    <sys:String x:Key="Str_Msg_RenameProfile_Title">إعادة تسمية الملف الشخصي</sys:String>
+    <sys:String x:Key="Str_Msg_RenameProfile_Body">أدخل اسماً جديداً للملف الشخصي '{0}':</sys:String>
+    <sys:String x:Key="Str_Msg_RenameProfileSuccess_Body">تمت إعادة تسمية الملف الشخصي من '{0}' إلى '{1}'</sys:String>
+    <sys:String x:Key="Str_Msg_RenameProfileFailed_Body">فشلت إعادة التسمية. ربما يوجد ملف شخصي باسم '{0}' بالفعل.</sys:String>
+    <sys:String x:Key="Str_Msg_ProfileChanged_Title">تم تغيير الملف الشخصي</sys:String>
+    <sys:String x:Key="Str_Msg_ProfileChanged_Body">تم التبديل إلى الملف الشخصي: {0}</sys:String>
+    <sys:String x:Key="Str_Msg_NoPortSelected_Title">لم يتم اختيار منفذ</sys:String>
+    <sys:String x:Key="Str_Msg_NoPortSelected_Body">يرجى اختيار منفذ COM أولاً.</sys:String>
+    <sys:String x:Key="Str_Msg_SettingsError_Title">خطأ في الإعدادات</sys:String>
+    <sys:String x:Key="Str_Msg_SettingsLoadFailed">تعذّر تحميل الإعدادات. سيتم استخدام الإعدادات الافتراضية.</sys:String>
+    <sys:String x:Key="Str_Msg_SettingsSaveFailed">فشل حفظ الإعدادات.</sys:String>
+    <sys:String x:Key="Str_Msg_StartupDisableFailed_Body">فشل تعطيل التشغيل عند بدء النظام: {0}</sys:String>
+    <sys:String x:Key="Str_Msg_StartupEnableFailed_Body">فشل تفعيل التشغيل عند بدء النظام: {0}</sys:String>
+    <sys:String x:Key="Str_Msg_SelectSessionFailed_Body">خطأ أثناء اختيار الجلسة: {0}</sys:String>
+    <sys:String x:Key="Str_Msg_LoadOutputDevicesFailed_Body">خطأ أثناء تحميل أجهزة الإخراج: {0}</sys:String>
+    <sys:String x:Key="Str_Msg_LoadInputDevicesFailed_Body">خطأ أثناء تحميل أجهزة الإدخال: {0}</sys:String>
+    <sys:String x:Key="Str_Msg_LoadSessionsFailed_Body">خطأ أثناء تحميل جلسات الصوت: {0}</sys:String>
+
+</ResourceDictionary>

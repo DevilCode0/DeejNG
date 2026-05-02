@@ -1,3 +1,4 @@
+using DeejNG.Services;
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
@@ -28,7 +29,7 @@ namespace DeejNG.Infrastructure.System
             catch (Exception ex)
             {
 
-                MessageBox.Show($"Failed to disable startup: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(LocalizationManager.L("Str_Msg_StartupDisableFailed_Body", ex.Message), LocalizationManager.L("Str_Msg_Error_Title"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -64,7 +65,7 @@ namespace DeejNG.Infrastructure.System
             catch (Exception ex)
             {
 
-                MessageBox.Show($"Failed to enable startup: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(LocalizationManager.L("Str_Msg_StartupEnableFailed_Body", ex.Message), LocalizationManager.L("Str_Msg_Error_Title"), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         public bool IsStartupEnabled()

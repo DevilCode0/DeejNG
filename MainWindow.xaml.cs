@@ -211,6 +211,9 @@ namespace DeejNG
             _timerCoordinator.SerialWatchdogCheck += SerialWatchdogTimer_Tick;
             _timerCoordinator.PositionSave += PositionSaveTimer_Tick;
 
+            // Subscribe to language changes to refresh code-behind strings
+            LocalizationManager.Instance.LanguageChanged += RefreshDynamicLabels;
+
             // Setup serial manager events
             _serialManager.DataReceived += HandleSliderData;
             _serialManager.ButtonStateChanged += HandleButtonPress;
@@ -966,7 +969,7 @@ namespace DeejNG
 
                     // Update button state immediately
                     ConnectButton.IsEnabled = false;
-                    ConnectButton.Content = "Connecting...";
+                    ConnectButton.Content = LocalizationManager.L("Str_Btn_Connecting");
 
                     // Stop automatic reconnection while user is manually connecting
                     _timerCoordinator.StopSerialReconnect();
@@ -985,7 +988,7 @@ namespace DeejNG
                 }
                 else
                 {
-                    MessageBox.Show("Please select a COM port first.", "No Port Selected",
+                    MessageBox.Show(LocalizationManager.L("Str_Msg_NoPortSelected_Body"), LocalizationManager.L("Str_Msg_NoPortSelected_Title"),
                                   MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
@@ -999,12 +1002,12 @@ namespace DeejNG
 
                 // Show/Hide Window
                 MenuItem showHideMenuItem = new MenuItem();
-                showHideMenuItem.Header = "Show/Hide";
+                showHideMenuItem.Header = LocalizationManager.L("Str_Tray_ShowHide");
                 showHideMenuItem.Click += ShowHideMenuItem_Click;
 
                 // Exit
                 MenuItem exitMenuItem = new MenuItem();
-                exitMenuItem.Header = "Exit";
+                exitMenuItem.Header = LocalizationManager.L("Str_Tray_Exit");
                 exitMenuItem.Click += ExitMenuItem_Click;
 
                 contextMenu.Items.Add(showHideMenuItem);
@@ -1031,14 +1034,13 @@ namespace DeejNG
                 // Prevent deletion of last profile
                 if (_profileManager.ProfileCollection.Profiles.Count <= 1)
                 {
-                    ConfirmationDialog.ShowOK("Cannot Delete",
-                        "Cannot delete the last profile. At least one profile must exist.", this);
+                    ConfirmationDialog.ShowOK(LocalizationManager.L("Str_Msg_CannotDelete_Title"),
+                        LocalizationManager.L("Str_Msg_CannotDeleteLast_Body"), this);
                     return;
                 }
 
-                var result = ConfirmationDialog.ShowYesNo("Confirm Delete",
-                    $"Are you sure you want to delete profile '{currentName}'?\n\n" +
-                    "This action cannot be undone.", this);
+                var result = ConfirmationDialog.ShowYesNo(LocalizationManager.L("Str_Msg_DeleteProfile_Title"),
+                    LocalizationManager.L("Str_Msg_DeleteProfile_Body", currentName), this);
 
                 if (result == ConfirmationDialog.ButtonResult.Yes)
                 {
@@ -1049,20 +1051,20 @@ namespace DeejNG
                         // Load the new active profile
                         LoadSettingsWithoutSerialConnection();
 
-                        ConfirmationDialog.ShowOK("Success",
-                            $"Profile '{currentName}' deleted successfully.", this);
+                        ConfirmationDialog.ShowOK(LocalizationManager.L("Str_Msg_Success_Title"),
+                            LocalizationManager.L("Str_Msg_DeleteProfileSuccess_Body", currentName), this);
                     }
                     else
                     {
-                        ConfirmationDialog.ShowOK("Error",
-                            $"Failed to delete profile '{currentName}'.", this);
+                        ConfirmationDialog.ShowOK(LocalizationManager.L("Str_Msg_Error_Title"),
+                            LocalizationManager.L("Str_Msg_DeleteProfileFailed_Body", currentName), this);
                     }
                 }
             }
             catch (Exception ex)
             {
-                ConfirmationDialog.ShowOK("Error",
-                    $"Error deleting profile: {ex.Message}", this);
+                ConfirmationDialog.ShowOK(LocalizationManager.L("Str_Msg_Error_Title"),
+                    LocalizationManager.L("Str_Msg_ProfileError_Body", ex.Message), this);
             }
         }
 
@@ -1605,8 +1607,8 @@ namespace DeejNG
         {
             var themes = new List<ThemeOption>
             {
-                new ThemeOption("Dark", "Dark", "🌑", "/Themes/DarkTheme.xaml"),
-                new ThemeOption("Light", "Light", "☀️", "/Themes/LightTheme.xaml")
+                new ThemeOption("Dark", LocalizationManager.L("Str_Theme_Dark"), "🌑", "/Themes/DarkTheme.xaml"),
+                new ThemeOption("Light", LocalizationManager.L("Str_Theme_Light"), "☀️", "/Themes/LightTheme.xaml")
             };
 
             ThemeSelector.ItemsSource = themes;
@@ -1904,17 +1906,14 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                 SaveSettings();
 
                 // Prompt for profile name
-                string newName = InputDialog.Show("New Profile", "Enter a name for the new profile:", "", this);
+                string newName = InputDialog.Show(LocalizationManager.L("Str_Msg_NewProfile_Title"), LocalizationManager.L("Str_Msg_NewProfile_Body"), "", this);
 
                 if (string.IsNullOrWhiteSpace(newName))
                     return;
 
                 // Ask if they want to copy current settings
-                var result = ConfirmationDialog.ShowYesNoCancel("Copy Settings?",
-                    "Do you want to copy the current profile's settings to the new profile?\n\n" +
-                    "Yes: Copy current settings\n" +
-                    "No: Start with default settings\n" +
-                    "Cancel: Don't create profile",
+                var result = ConfirmationDialog.ShowYesNoCancel(LocalizationManager.L("Str_Msg_CopySettings_Title"),
+                    LocalizationManager.L("Str_Msg_CopySettings_Body"),
                     this);
 
                 if (result == ConfirmationDialog.ButtonResult.Cancel)
@@ -1927,19 +1926,19 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                     LoadProfilesIntoUI();
                     ProfileSelector.SelectedItem = newName;
 
-                    ConfirmationDialog.ShowOK("Success",
-                        $"Profile '{newName}' created successfully!", this);
+                    ConfirmationDialog.ShowOK(LocalizationManager.L("Str_Msg_Success_Title"),
+                        LocalizationManager.L("Str_Msg_CreateProfileSuccess_Body", newName), this);
                 }
                 else
                 {
-                    ConfirmationDialog.ShowOK("Error",
-                        $"Failed to create profile '{newName}'. A profile with this name may already exist.", this);
+                    ConfirmationDialog.ShowOK(LocalizationManager.L("Str_Msg_Error_Title"),
+                        LocalizationManager.L("Str_Msg_CreateProfileFailed_Body", newName), this);
                 }
             }
             catch (Exception ex)
             {
-                ConfirmationDialog.ShowOK("Error",
-                    $"Error creating profile: {ex.Message}", this);
+                ConfirmationDialog.ShowOK(LocalizationManager.L("Str_Msg_Error_Title"),
+                    LocalizationManager.L("Str_Msg_ProfileError_Body", ex.Message), this);
             }
         }
 
@@ -2117,8 +2116,8 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                     ComPortSelector.SelectedItem = newPort;
                 }
 
-                ConfirmationDialog.ShowOK("Profile Changed",
-                    $"Switched to profile: {selectedProfile}", this);
+                ConfirmationDialog.ShowOK(LocalizationManager.L("Str_Msg_ProfileChanged_Title"),
+                    LocalizationManager.L("Str_Msg_ProfileChanged_Body", selectedProfile), this);
             }
         }
 
@@ -2158,8 +2157,8 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
             try
             {
                 string currentName = _profileManager.ActiveProfile.Name;
-                string newName = InputDialog.Show("Rename Profile",
-                    $"Enter a new name for profile '{currentName}':", currentName, this);
+                string newName = InputDialog.Show(LocalizationManager.L("Str_Msg_RenameProfile_Title"),
+                    LocalizationManager.L("Str_Msg_RenameProfile_Body", currentName), currentName, this);
 
                 if (string.IsNullOrWhiteSpace(newName) || newName == currentName)
                     return;
@@ -2168,19 +2167,19 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                 {
                     LoadProfilesIntoUI();
 
-                    ConfirmationDialog.ShowOK("Success",
-                        $"Profile renamed from '{currentName}' to '{newName}'", this);
+                    ConfirmationDialog.ShowOK(LocalizationManager.L("Str_Msg_Success_Title"),
+                        LocalizationManager.L("Str_Msg_RenameProfileSuccess_Body", currentName, newName), this);
                 }
                 else
                 {
-                    ConfirmationDialog.ShowOK("Error",
-                        $"Failed to rename profile. A profile named '{newName}' may already exist.", this);
+                    ConfirmationDialog.ShowOK(LocalizationManager.L("Str_Msg_Error_Title"),
+                        LocalizationManager.L("Str_Msg_RenameProfileFailed_Body", newName), this);
                 }
             }
             catch (Exception ex)
             {
-                ConfirmationDialog.ShowOK("Error",
-                    $"Error renaming profile: {ex.Message}", this);
+                ConfirmationDialog.ShowOK(LocalizationManager.L("Str_Msg_Error_Title"),
+                    LocalizationManager.L("Str_Msg_ProfileError_Body", ex.Message), this);
             }
         }
 
@@ -2262,7 +2261,7 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
             // Update UI to show attempting reconnection with background priority to prevent focus stealing
             Dispatcher.BeginInvoke(() =>
             {
-                ConnectionStatus.Text = "Attempting to reconnect...";
+                ConnectionStatus.Text = LocalizationManager.L("Str_Status_Attempting");
                 ConnectionStatus.Foreground = Brushes.Orange;
             }, DispatcherPriority.Background);
 
@@ -2283,7 +2282,7 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                 {
                     Dispatcher.BeginInvoke(() =>
                     {
-                        ConnectionStatus.Text = "Waiting for device...";
+                        ConnectionStatus.Text = LocalizationManager.L("Str_Status_Waiting");
                         ConnectionStatus.Foreground = Brushes.Orange;
                         LoadAvailablePorts();
                     }, DispatcherPriority.Background);
@@ -2295,7 +2294,7 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                 {
                     Dispatcher.BeginInvoke(() =>
                     {
-                        ConnectionStatus.Text = $"Scanning {_serialManager.CurrentPort}...";
+                        ConnectionStatus.Text = LocalizationManager.L("Str_Status_Scanning", _serialManager.CurrentPort);
                         ConnectionStatus.Foreground = Brushes.Orange;
                         LoadAvailablePorts();
                     }, DispatcherPriority.Background);
@@ -2306,7 +2305,7 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                     _serialManager.ClearInvalidPorts();
                     Dispatcher.BeginInvoke(() =>
                     {
-                        ConnectionStatus.Text = "Scanning COM ports...";
+                        ConnectionStatus.Text = LocalizationManager.L("Str_Status_ScanningPorts");
                         ConnectionStatus.Foreground = Brushes.Orange;
                         LoadAvailablePorts();
                     }, DispatcherPriority.Background);
@@ -2316,7 +2315,7 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
             {
                 Dispatcher.BeginInvoke(() =>
                 {
-                    ConnectionStatus.Text = "Connection failed - check ports manually";
+                    ConnectionStatus.Text = LocalizationManager.L("Str_Status_Failed");
                     ConnectionStatus.Foreground = Brushes.Red;
                 }, DispatcherPriority.Background);
             }
@@ -2390,7 +2389,7 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                     attemptTimer.Stop();
                     Dispatcher.BeginInvoke(() =>
                     {
-                        ConnectionStatus.Text = $"Scanning {_serialManager.CurrentPort}...";
+                        ConnectionStatus.Text = LocalizationManager.L("Str_Status_Scanning", _serialManager.CurrentPort);
                         ConnectionStatus.Foreground = Brushes.Orange;
                     }, DispatcherPriority.Background);
                     // Protocol validation will fire Connected/Disconnected events to finalize
@@ -2829,12 +2828,12 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                 _activePopupKeyModifiers = mapping.KeyModifiers;
                 _activePopupKeyComboDisplay = mapping.KeyComboDisplay;
                 PopupKeyComboText.Text = string.IsNullOrEmpty(mapping.KeyComboDisplay)
-                    ? "(click here, then press a combo)"
+                    ? LocalizationManager.L("Str_Popup_KeyComboPlaceholder")
                     : mapping.KeyComboDisplay;
             }
             else
             {
-                PopupKeyComboText.Text = "(click here, then press a combo)";
+                PopupKeyComboText.Text = LocalizationManager.L("Str_Popup_KeyComboPlaceholder");
             }
 
             var selectedAction = GetPopupComboAction(comboIndex);
@@ -2954,32 +2953,46 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
 
         #endregion Physical Button Quick-Config Row
 
+        private void RefreshDynamicLabels()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.BeginInvoke(RefreshDynamicLabels);
+                return;
+            }
+            UpdateConnectionStatus();
+            CreateNotifyIconContextMenu();
+            InitializeThemeSelector();
+        }
+
         private void UpdateConnectionStatus()
         {
             string statusText;
             Brush statusColor;
 
+            bool isFullyConnected = false;
             if (_serialManager.IsConnected)
             {
                 if (_serialManager.IsProtocolValidated)
                 {
-                    statusText = $"Connected to {_serialManager.CurrentPort}";
+                    statusText = LocalizationManager.L("Str_Status_Connected", _serialManager.CurrentPort);
                     statusColor = Brushes.Green;
+                    isFullyConnected = true;
                 }
                 else
                 {
-                    statusText = $"Verifying {_serialManager.CurrentPort}...";
+                    statusText = LocalizationManager.L("Str_Status_Verifying", _serialManager.CurrentPort);
                     statusColor = Brushes.Orange;
                 }
             }
             else if (_serialManager.ShouldAttemptReconnect())
             {
-                statusText = "Disconnected - Reconnecting...";
+                statusText = LocalizationManager.L("Str_Status_Reconnecting");
                 statusColor = Brushes.Orange;
             }
             else
             {
-                statusText = "Disconnected";
+                statusText = LocalizationManager.L("Str_Status_Disconnected");
                 statusColor = Brushes.Red;
             }
 
@@ -2992,9 +3005,10 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
 
             ConnectionStatus.Text = statusText;
             ConnectionStatus.Foreground = statusColor;
+            ConnectionStatus.Tag = isFullyConnected ? "connected" : "disconnected";
 
             ConnectButton.IsEnabled = true;
-            ConnectButton.Content = _serialManager.IsConnected ? "Disconnect" : "Connect";
+            ConnectButton.Content = _serialManager.IsConnected ? LocalizationManager.L("Str_Btn_Disconnect") : LocalizationManager.L("Str_Btn_Connect");
 
             UpdateConnectionDependentUI();
         }
@@ -3022,7 +3036,7 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
         private void RescanButton_Click(object sender, RoutedEventArgs e)
         {
             RescanButton.IsEnabled = false;
-            RescanButton.Content = "Scanning...";
+            RescanButton.Content = LocalizationManager.L("Str_Btn_Scanning");
 
             int baud = _settingsManager.AppSettings.BaudRate > 0
                 ? _settingsManager.AppSettings.BaudRate : 9600;
@@ -3043,20 +3057,20 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                     {
                         t.Stop();
                         RescanButton.IsEnabled = true;
-                        RescanButton.Content = "Rescan for Device";
+                        RescanButton.Content = LocalizationManager.L("Str_Btn_Rescan");
                     };
                     t.Start();
                 }
                 else
                 {
                     RescanButton.IsEnabled = true;
-                    RescanButton.Content = "Rescan for Device";
+                    RescanButton.Content = LocalizationManager.L("Str_Btn_Rescan");
                 }
             }
             catch
             {
                 RescanButton.IsEnabled = true;
-                RescanButton.Content = "Rescan for Device";
+                RescanButton.Content = LocalizationManager.L("Str_Btn_Rescan");
             }
         }
 
