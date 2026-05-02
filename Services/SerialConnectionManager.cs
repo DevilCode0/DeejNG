@@ -64,6 +64,7 @@ namespace DeejNG.Services
         public event Action<string> DataReceived;
         public event Action Disconnected;
         public event Action<string> ProtocolValidated;
+        public event Action<int> ButtonCountChanged;
 
         #endregion Public Events
 
@@ -75,6 +76,7 @@ namespace DeejNG.Services
         public bool IsFullyInitialized => _serialPortFullyInitialized;
         public bool IsProtocolValidated => _isProtocolValidated;
         public string LastConnectedPort => _lastConnectedPort;
+        public int DetectedButtonCount => _buttonStates.Length;
 
         #endregion Public Properties
 
@@ -435,6 +437,11 @@ namespace DeejNG.Services
 
                 // Reset button state initialization flag on disconnect
                 _buttonStatesInitialized = false;
+                if (_buttonStates.Length != 0)
+                {
+                    _buttonStates = Array.Empty<bool>();
+                    ButtonCountChanged?.Invoke(0);
+                }
             }
             catch (Exception ex)
             {
@@ -572,7 +579,7 @@ namespace DeejNG.Services
                 {
                     _buttonStates = new bool[buttonValues.Count];
                     _buttonStatesInitialized = false; // Need to initialize states from hardware
-
+                    ButtonCountChanged?.Invoke(buttonValues.Count);
                 }
 
                 // Check each button for state changes

@@ -128,6 +128,7 @@ namespace DeejNG
         // Physical button quick-config row state
         private int _activePopupButtonIndex = -1;
         private int _maxDetectedButtonIndex = -1;
+        private int _detectedButtonCount = 0;
         private Button[] _physicalButtonRow;
         private uint _activePopupKeyCode = 0;
         private int _activePopupKeyModifiers = 0;
@@ -213,6 +214,7 @@ namespace DeejNG
             // Setup serial manager events
             _serialManager.DataReceived += HandleSliderData;
             _serialManager.ButtonStateChanged += HandleButtonPress;
+            _serialManager.ButtonCountChanged += HandleButtonCountChanged;
             _serialManager.Connected += () =>
             {
                 Dispatcher.BeginInvoke(() =>
@@ -1377,6 +1379,18 @@ namespace DeejNG
             }
 
             return highestPeak;
+        }
+
+        private void HandleButtonCountChanged(int count)
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.BeginInvoke(() => HandleButtonCountChanged(count));
+                return;
+            }
+
+            _detectedButtonCount = count;
+            UpdateConnectionDependentUI();
         }
 
         /// <summary>
@@ -3000,7 +3014,7 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
             if (DisconnectedOverlay != null)
                 DisconnectedOverlay.Visibility = ready ? Visibility.Collapsed : Visibility.Visible;
             if (PhysicalButtonsRow != null)
-                PhysicalButtonsRow.Visibility = (ready && _channelControls.Count > 0)
+                PhysicalButtonsRow.Visibility = (ready && _channelControls.Count > 0 && _detectedButtonCount > 0)
                     ? Visibility.Visible
                     : Visibility.Collapsed;
         }
