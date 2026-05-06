@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DeejNG.Models
+namespace MixrU.Models
 {
     /// <summary>
     /// Represents a target for audio control (e.g., an app session, input device, or output device).

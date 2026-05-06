@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows;
 
-namespace DeejNG.Services
+namespace MixrU.Services
 {
     public class LocalizationManager
     {

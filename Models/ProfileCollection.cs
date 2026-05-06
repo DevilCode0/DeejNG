@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DeejNG.Models
+namespace MixrU.Models
 {
     /// <summary>
     /// Container for all profiles and active profile tracking

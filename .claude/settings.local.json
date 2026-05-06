@@ -18,7 +18,9 @@
       "Bash(Select-String -Pattern \"error|Build succeeded\")",
       "WebSearch",
       "Bash(grep -v \"^$\")",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(dotnet run *)",
+      "Bash(dotnet clean *)"
     ],
     "deny": [],
     "ask": []

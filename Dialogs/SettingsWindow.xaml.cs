@@ -1,6 +1,6 @@
-﻿using DeejNG.Classes;
-using DeejNG.Models;
-using DeejNG.Services;
+﻿using MixrU.Classes;
+using MixrU.Models;
+using MixrU.Services;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace DeejNG.Dialogs
+namespace MixrU.Dialogs
 {
     /// <summary>
     /// Interaction logic for the Settings window.
@@ -43,7 +43,7 @@ namespace DeejNG.Dialogs
             // Build the path to the settings file in the user's AppData folder
             _settingsPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "DeejNG", "settings.json");
+                "MixrU", "settings.json");
 
             _mainWindow = Application.Current.MainWindow as MainWindow;
             _settings = LoadSettings();

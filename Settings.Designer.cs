@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DeejNG {
+namespace MixrU {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

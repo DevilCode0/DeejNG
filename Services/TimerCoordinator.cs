@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Threading;
 
-namespace DeejNG.Services
+namespace MixrU.Services
 {
     public class TimerCoordinator : IDisposable
     {

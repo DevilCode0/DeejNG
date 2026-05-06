@@ -1,8 +1,8 @@
-using DeejNG;
-using DeejNG.Classes;
-using DeejNG.Core.Helpers;
-using DeejNG.Core.Interfaces;
-using DeejNG.Views;
+﻿using MixrU;
+using MixrU.Classes;
+using MixrU.Core.Helpers;
+using MixrU.Core.Interfaces;
+using MixrU.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 
-namespace DeejNG.Core.Services
+namespace MixrU.Core.Services
 {
     public class OverlayService : IOverlayService, IDisposable
     {
@@ -311,7 +311,7 @@ namespace DeejNG.Core.Services
             }
         }
 
-        private void OnOverlayPositionChangedEvent(object sender, DeejNG.Views.OverlayPositionEventArgs e)
+        private void OnOverlayPositionChangedEvent(object sender, MixrU.Views.OverlayPositionEventArgs e)
         {
 
             UpdatePosition(e.X, e.Y);

@@ -1,11 +1,11 @@
-using DeejNG.Classes;
+﻿using MixrU.Classes;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 
-namespace DeejNG.Core.Helpers
+namespace MixrU.Core.Helpers
 {
     /// <summary>
     /// Manages overlay positioning across multiple monitors, handling display configuration changes

@@ -1,10 +1,10 @@
 ![example workflow](https://github.com/jimmyeao/DeejNG/actions/workflows/codeql.yml/badge.svg)
 
 <p align="center">
-  <img src="logo.png" alt="DeejNG Logo" width="200"/>
+  <img src="logo.png" alt="MixrU Logo" width="200"/>
 </p>
 
-# DeejNG - We've had a UI Update!
+# MixrU - We've had a UI Update!
 
 <img width="772" height="561" alt="image" src="https://github.com/user-attachments/assets/988c1148-2e28-4be7-b430-7425d8209647" />
 
@@ -12,7 +12,7 @@
 We now support buttons! You can use our fork of Deej to add button support here https://github.com/jimmyeao/ButtonDeej
 
 
-DeejNG is a modern, extensible audio mixer and controller for Windows, built with WPF (.NET 9), NAudio, and SkiaSharp. It allows real-time control over system and app volumes using physical sliders (e.g. Arduino), complete with VU meters, mute toggles, and persistent target mappings. This is meant as a companion app to the hardware, the code for which can be found here https://github.com/omriharel/deej
+MixrU is a modern, extensible audio mixer and controller for Windows, built with WPF (.NET 9), NAudio, and SkiaSharp. It allows real-time control over system and app volumes using physical sliders (e.g. Arduino), complete with VU meters, mute toggles, and persistent target mappings. This is meant as a companion app to the hardware, the code for which can be found here https://github.com/omriharel/deej
 
 ##  New!
 Configurable transpartent overaly with adjustable time out
@@ -62,7 +62,7 @@ Add applicaiotn manually by name
 ### 🎚️ Setting Up Sliders
 
 1. Connect your physical slider hardware (e.g. Arduino).
-2. Launch DeejNG.
+2. Launch MixrU.
 3. Select the correct COM port from the dropdown and click **Connect**.
 4. Sliders will auto-generate based on incoming serial data (e.g. `0.5|0.3|...`).
 
@@ -120,10 +120,10 @@ Configure Buttons for Media Control or Mute
 ### Step 1 — Publish the application
 
 ```powershell
-dotnet publish DeejNG.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o ./publish
+dotnet publish MixrU.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o ./publish
 ```
 
-Output: `publish\DeejNG.exe`
+Output: `publish\MixrU.exe`
 
 ### Step 2 — Compile the installer *(optional)*
 
@@ -133,7 +133,7 @@ In PowerShell:
 & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
 ```
 
-Output: `installer\DeejNG-1.1.1.59-Setup.exe`
+Output: `installer\MixrU-1.1.1.59-Setup.exe`
 
 ---
 

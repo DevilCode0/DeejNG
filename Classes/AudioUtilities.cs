@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using NAudio.CoreAudioApi;
 
-namespace DeejNG.Classes
+namespace MixrU.Classes
 {
     /// <summary>
     /// Centralized utility class for audio-related operations to prevent code duplication.

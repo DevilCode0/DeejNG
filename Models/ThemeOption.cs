@@ -1,4 +1,4 @@
-namespace DeejNG.Models
+﻿namespace MixrU.Models
 {
     public class ThemeOption
     {

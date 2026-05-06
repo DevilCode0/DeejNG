@@ -1,8 +1,8 @@
-# Add Hardware Button Support and Inline Mute Functionality
+﻿# Add Hardware Button Support and Inline Mute Functionality
 
 ## Summary
 
-This PR adds two major hardware control features to DeejNG:
+This PR adds two major hardware control features to MixrU:
 1. **Auto-Detected Hardware Buttons** - Physical buttons automatically detected via distinct value ranges (10000/10001)
 2. **Inline Mute Trigger** - Quick channel muting by sending 9999 from the hardware controller
 
@@ -14,7 +14,7 @@ These features enable sophisticated physical control interfaces beyond simple sl
 
 ### Overview
 
-DeejNG now auto-detects and supports physical buttons from your Arduino/controller. Buttons use distinct value ranges (10000=OFF, 10001=ON) that are instantly recognizable and self-documenting - no manual configuration of button counts needed!
+MixrU now auto-detects and supports physical buttons from your Arduino/controller. Buttons use distinct value ranges (10000=OFF, 10001=ON) that are instantly recognizable and self-documenting - no manual configuration of button counts needed!
 
 ### Serial Protocol
 
@@ -191,7 +191,7 @@ Serial.print(channel1Muted ? 9999 : analogRead(A0));
 
 ### Protocol Validation
 
-Both button values (10000/10001) and inline mute (9999) are recognized as valid DeejNG protocol and won't cause connection validation failures.
+Both button values (10000/10001) and inline mute (9999) are recognized as valid MixrU protocol and won't cause connection validation failures.
 
 ---
 

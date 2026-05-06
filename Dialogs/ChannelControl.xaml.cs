@@ -1,6 +1,6 @@
-﻿using DeejNG.Models;
-using DeejNG.Classes;
-using DeejNG.Services;
+﻿using MixrU.Models;
+using MixrU.Classes;
+using MixrU.Services;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,9 +10,9 @@ using System.Windows.Threading;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
 using SkiaSharp.Views.WPF;
-using DeejNG.Views;
+using MixrU.Views;
 
-namespace DeejNG.Dialogs
+namespace MixrU.Dialogs
 {
     public partial class ChannelControl : UserControl
     {
@@ -386,7 +386,7 @@ namespace DeejNG.Dialogs
         private void ChannelControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             // Open the multi-target picker instead of the single target picker
-            var mainWin = Application.Current.MainWindow as DeejNG.MainWindow;
+            var mainWin = Application.Current.MainWindow as MixrU.MainWindow;
             var picker = new MultiTargetPickerDialog(_audioTargets, mainWin?.VoiceMeeter)
             {
                 Owner = Application.Current.MainWindow,

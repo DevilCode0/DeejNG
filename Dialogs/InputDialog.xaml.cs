@@ -1,6 +1,6 @@
-using System.Windows;
+﻿using System.Windows;
 
-namespace DeejNG.Dialogs
+namespace MixrU.Dialogs
 {
     /// <summary>
     /// Material Design themed input dialog

@@ -1,10 +1,10 @@
-# CLAUDE.md
+﻿# CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 
-DeejNG is a modern audio mixer and controller for Windows built with WPF (.NET 9), NAudio, and SkiaSharp. It provides real-time control over system and application volumes using physical sliders connected via serial (e.g., Arduino), featuring VU meters, mute controls, and persistent configuration with profile support.
+MixrU is a modern audio mixer and controller for Windows built with WPF (.NET 9), NAudio, and SkiaSharp. It provides real-time control over system and application volumes using physical sliders connected via serial (e.g., Arduino), featuring VU meters, mute controls, and persistent configuration with profile support.
 
 **Key Technologies:**
 - .NET 9 / WPF (Windows-only)
@@ -16,17 +16,17 @@ DeejNG is a modern audio mixer and controller for Windows built with WPF (.NET 9
 
 **Build the project:**
 ```powershell
-dotnet build DeejNG.sln
+dotnet build MixrU.sln
 ```
 
 **Build for Release:**
 ```powershell
-dotnet build DeejNG.sln -c Release
+dotnet build MixrU.sln -c Release
 ```
 
 **Run the application:**
 ```powershell
-dotnet run --project DeejNG.csproj
+dotnet run --project MixrU.csproj
 ```
 
 **Clean build artifacts:**
@@ -36,10 +36,10 @@ dotnet clean
 
 **Build installer (requires Inno Setup 6):**
 ```powershell
-dotnet publish DeejNG.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish\
+dotnet publish MixrU.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish\
 & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
 ```
-Output: `installer\DeejNG-{version}-Setup.exe`
+Output: `installer\MixrU-{version}-Setup.exe`
 
 Note: This is a Windows-only WPF application targeting .NET 9. Requires Windows with audio devices and optionally Arduino hardware for physical slider control.
 
@@ -83,7 +83,7 @@ The application uses a **manager-based architecture** with manual dependency inj
 ### Directory Structure
 
 ```
-DeejNG/
+MixrU/
 ├── MainWindow.xaml(.cs)     # Main application window
 ├── App.xaml(.cs)            # Application entry point
 ├── Classes/                 # Core utilities
@@ -253,8 +253,8 @@ Indicators use WPF DataTriggers bound to `ButtonIndicatorViewModel.IsPressed`:
 ### Settings Persistence
 
 Settings stored in JSON format with multiple fallback paths for Server OS compatibility:
-1. `%LocalAppData%\DeejNG\settings.json` (preferred)
-2. `%AppData%\DeejNG\settings.json` (fallback)
+1. `%LocalAppData%\MixrU\settings.json` (preferred)
+2. `%AppData%\MixrU\settings.json` (fallback)
 3. Application directory (last resort)
 
 Profiles stored in `profiles.json` in the same directory. All saves are throttled to prevent excessive disk I/O.

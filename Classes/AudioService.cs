@@ -1,12 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using NAudio.CoreAudioApi;
-using DeejNG.Classes;
+using MixrU.Classes;
 
-namespace DeejNG.Services
+namespace MixrU.Services
 {
     public class AudioService
     {

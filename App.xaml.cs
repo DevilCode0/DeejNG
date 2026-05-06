@@ -1,12 +1,12 @@
-﻿using DeejNG.Core.Configuration;
-using DeejNG.Services;
+﻿using MixrU.Core.Configuration;
+using MixrU.Services;
 using System;
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
 
-namespace DeejNG
+namespace MixrU
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -30,7 +30,7 @@ namespace DeejNG
             {
                 string settingsPath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "DeejNG", "settings.json");
+                    "MixrU", "settings.json");
 
                 if (File.Exists(settingsPath))
                 {

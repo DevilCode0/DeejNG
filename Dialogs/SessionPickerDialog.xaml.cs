@@ -1,10 +1,10 @@
-﻿using DeejNG.Classes; // Add this for AudioUtilities
-using DeejNG.Services;
+﻿using MixrU.Classes; // Add this for AudioUtilities
+using MixrU.Services;
 using NAudio.CoreAudioApi;
 using System.Diagnostics;
 using System.Windows;
 
-namespace DeejNG.Dialogs
+namespace MixrU.Dialogs
 {
     public static class AudioSessionManagerHelper
     {

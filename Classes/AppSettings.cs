@@ -1,14 +1,14 @@
-﻿using DeejNG.Models;
+﻿using MixrU.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DeejNG.Classes
+namespace MixrU.Classes
 {
     /// <summary>
-    /// Represents application settings for DeejNG.
+    /// Represents application settings for MixrU.
     /// </summary>
     public class AppSettings
     {

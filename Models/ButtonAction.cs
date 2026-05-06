@@ -1,4 +1,4 @@
-namespace DeejNG.Models
+﻿namespace MixrU.Models
 {
     /// <summary>
     /// Defines the action types that can be assigned to a physical button.

@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using NAudio.CoreAudioApi;
 
-namespace DeejNG.Services
+namespace MixrU.Services
 {
     public class DeviceCacheManager : IDisposable
     {

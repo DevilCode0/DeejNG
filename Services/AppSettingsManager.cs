@@ -1,6 +1,6 @@
-using DeejNG.Classes;
-using DeejNG.Models;
-using DeejNG.Core.Helpers;
+﻿using MixrU.Classes;
+using MixrU.Models;
+using MixrU.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace DeejNG.Services
+namespace MixrU.Services
 {
  
     public class AppSettingsManager
@@ -30,7 +30,7 @@ namespace DeejNG.Services
 
         #region Public Properties
 
-        // Rename to avoid conflict with DeejNG.Settings class
+        // Rename to avoid conflict with MixrU.Settings class
         public AppSettings AppSettings { get; set; } = new AppSettings();
 
         #endregion Public Properties
@@ -50,7 +50,7 @@ namespace DeejNG.Services
                 // Try LocalApplicationData first (standard location)
                 string primaryPath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "DeejNG",
+                    "MixrU",
                     "settings.json");
 
 
@@ -66,7 +66,7 @@ namespace DeejNG.Services
                 // Fallback 1: ApplicationData (Roaming)
                 string fallback1 = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    "DeejNG",
+                    "MixrU",
                     "settings.json");
 
 
@@ -81,7 +81,7 @@ namespace DeejNG.Services
                 // Fallback 2: Current user's Documents folder
                 string fallback2 = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                    "DeejNG",
+                    "MixrU",
                     "settings.json");
 
 

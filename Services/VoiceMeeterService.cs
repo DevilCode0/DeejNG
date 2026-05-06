@@ -1,14 +1,14 @@
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace DeejNG.Services
+namespace MixrU.Services
 {
     /// <summary>
     /// Wraps the VoiceMeeter Remote API (VoicemeeterRemote64.dll) to allow controlling
-    /// VoiceMeeter bus (hardware out) volumes from DeejNG sliders.
+    /// VoiceMeeter bus (hardware out) volumes from MixrU sliders.
     /// Loads the DLL at runtime from the VoiceMeeter install directory.
     /// </summary>
     public class VoiceMeeterService : IDisposable

@@ -1,8 +1,8 @@
-using DeejNG.Classes;
+﻿using MixrU.Classes;
 using System;
 using System.Collections.Generic;
 
-namespace DeejNG.Core.Interfaces
+namespace MixrU.Core.Interfaces
 {
     public interface IOverlayService
     {

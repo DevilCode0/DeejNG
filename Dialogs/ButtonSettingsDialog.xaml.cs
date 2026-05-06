@@ -1,5 +1,5 @@
-using DeejNG.Classes;
-using DeejNG.Models;
+﻿using MixrU.Classes;
+using MixrU.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace DeejNG.Dialogs
+namespace MixrU.Dialogs
 {
     /// <summary>
     /// Interaction logic for ButtonSettingsDialog.

@@ -1,13 +1,13 @@
-#define MyAppName "DeejNG"
+﻿#define MyAppName "MixrU"
 #define MyAppVersion "1.1.1.59"
-#define MyAppPublisher "DeejNG"
+#define MyAppPublisher "MixrU"
 #define MyAppURL "https://github.com/jimmyeao/DeejNG"
-#define MyAppExeName "DeejNG.exe"
+#define MyAppExeName "MixrU.exe"
 #define MyAppIconName "Square150x150Logo.scale-200.ico"
 #define PublishDir "publish"
 
 [Setup]
-AppId={{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}
+AppId={{9936BD60-466B-4D26-BB73-81B925ABEAA7}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
@@ -19,7 +19,7 @@ DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 ; Output installer to an "installer" subfolder
 OutputDir=installer
-OutputBaseFilename=DeejNG-{#MyAppVersion}-Setup
+OutputBaseFilename=MixrU-{#MyAppVersion}-Setup
 SetupIconFile={#PublishDir}\{#MyAppIconName}
 Compression=lzma2/ultra64
 SolidCompression=yes
@@ -69,7 +69,7 @@ Filename: "{app}\{#MyAppExeName}"; \
 
 [UninstallRun]
 ; Kill the process if running before uninstall
-Filename: "taskkill.exe"; Parameters: "/F /IM {#MyAppExeName}"; Flags: runhidden; RunOnceId: "KillDeejNG"
+Filename: "taskkill.exe"; Parameters: "/F /IM {#MyAppExeName}"; Flags: runhidden; RunOnceId: "KillMixrU"
 
 [Code]
 // Kill any running instance before installing (upgrade scenario)

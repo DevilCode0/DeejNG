@@ -8,7 +8,7 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Square150x150Logo.scale-200.ico</ApplicationIcon>
     <PlatformTarget>x64</PlatformTarget>
-    <Title>DeejNG</Title>
+    <Title>MixrU</Title>
     <PackageIcon>logo.png</PackageIcon>
     <Version>1.1.1.59</Version>
     <AssemblyVersion>1.1.1.59</AssemblyVersion>

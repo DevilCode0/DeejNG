@@ -1,4 +1,4 @@
-namespace DeejNG.Models
+﻿namespace MixrU.Models
 {
     /// <summary>
     /// Represents the mapping configuration for a physical button.

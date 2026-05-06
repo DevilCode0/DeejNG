@@ -1,11 +1,11 @@
-using DeejNG.Dialogs;
-using DeejNG.Models;
+﻿using MixrU.Dialogs;
+using MixrU.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace DeejNG.Services
+namespace MixrU.Services
 {
     /// <summary>
     /// Handles execution of button actions such as media control and mute toggling.

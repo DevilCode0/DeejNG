@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace DeejNG.Infrastructure.System
+namespace MixrU.Infrastructure.System
 {
     public interface ISystemIntegrationService
     {

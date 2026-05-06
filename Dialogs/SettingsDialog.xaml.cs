@@ -1,11 +1,11 @@
-using DeejNG.Classes;
+﻿using MixrU.Classes;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace DeejNG.Dialogs
+namespace MixrU.Dialogs
 {
     /// <summary>
     /// In-app settings dialog content hosted by MaterialDesign DialogHost.
@@ -29,7 +29,7 @@ namespace DeejNG.Dialogs
 
             _settingsPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "DeejNG", "settings.json");
+                "MixrU", "settings.json");
 
             _mainWindow = Application.Current.MainWindow as MainWindow;
             _settings = LoadSettings();

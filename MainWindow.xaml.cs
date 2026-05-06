@@ -1,12 +1,12 @@
-using DeejNG.Classes;
-using DeejNG.Core.Configuration;
-using DeejNG.Core.Interfaces;
-using DeejNG.Core.Services;
-using DeejNG.Dialogs;
-using DeejNG.Infrastructure.System;
-using DeejNG.Models;
-using DeejNG.Services;
-using DeejNG.Views;
+﻿using MixrU.Classes;
+using MixrU.Core.Configuration;
+using MixrU.Core.Interfaces;
+using MixrU.Core.Services;
+using MixrU.Dialogs;
+using MixrU.Infrastructure.System;
+using MixrU.Models;
+using MixrU.Services;
+using MixrU.Views;
 using Microsoft.Win32;
 using NAudio.CoreAudioApi;
 using NAudio.CoreAudioApi.Interfaces;
@@ -27,7 +27,7 @@ using System.Windows.Media;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace DeejNG
+namespace MixrU
 {
     public partial class MainWindow : Window
     {
@@ -268,7 +268,7 @@ namespace DeejNG
 
             MyNotifyIcon.Icon = new System.Drawing.Icon(iconPath);
             CreateNotifyIconContextMenu();
-            IconHandler.AddIconToRemovePrograms("DeejNG");
+            IconHandler.AddIconToRemovePrograms("MixrU");
             _systemIntegrationService.SetDisplayIcon();
 
             // CRITICAL: Initialize overlay and subscribe to events BEFORE potentially hiding the window
@@ -436,7 +436,7 @@ namespace DeejNG
                 _settingsManager.AppSettings.OverlayY = y;
 
                 // Save screen information for multi-monitor support
-                var screenInfo = DeejNG.Core.Helpers.ScreenPositionManager.GetScreenInfo(x, y);
+                var screenInfo = MixrU.Core.Helpers.ScreenPositionManager.GetScreenInfo(x, y);
                 _settingsManager.AppSettings.OverlayScreenDevice = screenInfo.DeviceName;
                 _settingsManager.AppSettings.OverlayScreenBounds = screenInfo.Bounds;
 
@@ -1264,7 +1264,7 @@ namespace DeejNG
             try
             {
                 // Try to read version from ClickOnce manifest file
-                string manifestPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DeejNG.exe.manifest");
+                string manifestPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "MixrU.exe.manifest");
                 if (System.IO.File.Exists(manifestPath))
                 {
                     var manifestXml = System.Xml.Linq.XDocument.Load(manifestPath);
@@ -1954,7 +1954,7 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                 _settingsManager.AppSettings.OverlayY = e.Y;
 
                 // Save screen information for multi-monitor support
-                var screenInfo = DeejNG.Core.Helpers.ScreenPositionManager.GetScreenInfo(e.X, e.Y);
+                var screenInfo = MixrU.Core.Helpers.ScreenPositionManager.GetScreenInfo(e.X, e.Y);
                 _settingsManager.AppSettings.OverlayScreenDevice = screenInfo.DeviceName;
                 _settingsManager.AppSettings.OverlayScreenBounds = screenInfo.Bounds;
 
@@ -2275,7 +2275,7 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                 return; // The Connected event will stop the timer
             }
 
-            // Saved port not available — auto-scan all COM ports for a DeejNG device
+            // Saved port not available — auto-scan all COM ports for a MixrU device
             try
             {
                 var availablePorts = SerialPort.GetPortNames();
@@ -2385,7 +2385,7 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                     return;
                 }
 
-                // Saved port not found — try auto-detecting any available DeejNG device
+                // Saved port not found — try auto-detecting any available MixrU device
                 if (_serialManager.TryAutoDetect(baudRate))
                 {
                     attemptTimer.Stop();

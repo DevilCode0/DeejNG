@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace DeejNG.Core.Interfaces
+namespace MixrU.Core.Interfaces
 {
     public interface IPowerManagementService : IDisposable
     {

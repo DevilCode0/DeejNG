@@ -1,4 +1,4 @@
-using DeejNG.Services;
+﻿using MixrU.Services;
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
@@ -6,13 +6,13 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 
-namespace DeejNG.Infrastructure.System
+namespace MixrU.Infrastructure.System
 {
     public class SystemIntegrationService : ISystemIntegrationService
     {
         #region Private Fields
 
-        private const string APP_NAME = "DeejNG";
+        private const string APP_NAME = "MixrU";
 
         #endregion Private Fields
 
@@ -129,45 +129,23 @@ namespace DeejNG.Infrastructure.System
             {
                 // Try multiple possible shortcut locations
                 string[] possiblePaths = {
-                    // Option 1: Direct path as user suggested
-                    Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                        "Microsoft", "Windows", "Start Menu", "Programs",
-                        "DeejNG",
-                        "DeejNG.appref-ms"),
-                    
-                    // Option 2: With Jimmy White folder
-                    Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                        "Microsoft", "Windows", "Start Menu", "Programs",
-                        "Jimmy White",
-                        "DeejNG",
-                        "DeejNG.appref-ms"),
-                    
-                    // Option 3: Different Jimmy White structure
-                    Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                        "Microsoft", "Windows", "Start Menu", "Programs",
-                        "Jimmy White's DeejNG",
-                        "DeejNG.appref-ms"),
-                    
-                    // Option 4: Look for .lnk shortcut instead
-                    Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                        "Microsoft", "Windows", "Start Menu", "Programs",
-                        "DeejNG.lnk"),
-                    
-                    // Option 5: Common programs folder
+                    // Option 1: Start Menu shortcut (.lnk) — written by Inno Setup installer
                     Path.Combine(
                         Environment.GetFolderPath(Environment.SpecialFolder.CommonPrograms),
-                        "DeejNG",
-                        "DeejNG.lnk"),
-                    
-                    // Option 6: User's programs folder
+                        "MixrU",
+                        "MixrU.lnk"),
+
+                    // Option 2: User-level programs folder
                     Path.Combine(
                         Environment.GetFolderPath(Environment.SpecialFolder.Programs),
-                        "DeejNG",
-                        "DeejNG.lnk")
+                        "MixrU",
+                        "MixrU.lnk"),
+
+                    // Option 3: Bare .lnk next to Programs folder
+                    Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                        "Microsoft", "Windows", "Start Menu", "Programs",
+                        "MixrU.lnk"),
                 };
 
                 foreach (var path in possiblePaths)

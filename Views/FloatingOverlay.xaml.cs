@@ -1,6 +1,6 @@
 ﻿// Updated FloatingOverlay.xaml.cs with proper text color handling
 
-using DeejNG.Classes;
+using MixrU.Classes;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
 using SkiaSharp.Views.WPF;
@@ -14,7 +14,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
 
-namespace DeejNG.Views
+namespace MixrU.Views
 {
     public partial class FloatingOverlay : Window
     {

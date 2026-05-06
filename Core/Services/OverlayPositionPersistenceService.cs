@@ -1,5 +1,5 @@
-using DeejNG.Models;
-using DeejNG.Core.Helpers;
+﻿using MixrU.Models;
+using MixrU.Core.Helpers;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace DeejNG.Core.Services
+namespace MixrU.Core.Services
 {
     /// <summary>
     /// Data class for storing overlay position with multi-monitor metadata
@@ -57,7 +57,7 @@ namespace DeejNG.Core.Services
             // Store position file in user's AppData to avoid permission issues
             var appDataFolder = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "DeejNG"
+                "MixrU"
             );
 
             try

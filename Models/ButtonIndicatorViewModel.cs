@@ -1,6 +1,6 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
-namespace DeejNG.Models
+namespace MixrU.Models
 {
     /// <summary>
     /// View model for button indicator UI.

@@ -9,11 +9,11 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using DeejNG.Models;
-using DeejNG.Services;
+using MixrU.Models;
+using MixrU.Services;
 using NAudio.CoreAudioApi;
 
-namespace DeejNG.Dialogs
+namespace MixrU.Dialogs
 {
     public partial class MultiTargetPickerDialog : Window
     {

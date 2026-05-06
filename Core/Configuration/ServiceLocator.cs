@@ -1,10 +1,10 @@
-using DeejNG.Core.Interfaces;
-using DeejNG.Core.Services;
-using DeejNG.Infrastructure.System;
+﻿using MixrU.Core.Interfaces;
+using MixrU.Core.Services;
+using MixrU.Infrastructure.System;
 using System;
 using System.Collections.Generic;
 
-namespace DeejNG.Core.Configuration
+namespace MixrU.Core.Configuration
 {
     /// <summary>
     /// Service locator for manual dependency injection until full DI container is implemented

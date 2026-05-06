@@ -1,5 +1,5 @@
-using DeejNG.Classes;
-using DeejNG.Models;
+﻿using MixrU.Classes;
+using MixrU.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace DeejNG.Services
+namespace MixrU.Services
 {
     /// <summary>
     /// Manages user profiles including loading, saving, switching, and migration

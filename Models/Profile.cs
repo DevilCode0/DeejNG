@@ -1,7 +1,7 @@
-using DeejNG.Classes;
+﻿using MixrU.Classes;
 using System;
 
-namespace DeejNG.Models
+namespace MixrU.Models
 {
     /// <summary>
     /// Represents a user profile containing all application settings

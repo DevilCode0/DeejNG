@@ -1,4 +1,4 @@
-<Window x:Class="DeejNG.Dialogs.SettingsWindow"
+﻿<Window x:Class="MixrU.Dialogs.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"

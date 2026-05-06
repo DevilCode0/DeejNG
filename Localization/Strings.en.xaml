@@ -1,4 +1,4 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=System.Runtime">
 
@@ -22,7 +22,7 @@
     <sys:String x:Key="Str_Main_Profile">Profile:</sys:String>
     <sys:String x:Key="Str_Main_PhysicalButtons">Physical Buttons:</sys:String>
     <sys:String x:Key="Str_Main_NoDevice">Please connect your device</sys:String>
-    <sys:String x:Key="Str_Main_NoDeviceHint">Plug in your DeejNG hardware over USB, then click Rescan.</sys:String>
+    <sys:String x:Key="Str_Main_NoDeviceHint">Plug in your MixrU hardware over USB, then click Rescan.</sys:String>
     <sys:String x:Key="Str_Btn_Minimize">Minimize</sys:String>
     <sys:String x:Key="Str_Btn_Connect">Connect</sys:String>
     <sys:String x:Key="Str_Btn_Disconnect">Disconnect</sys:String>

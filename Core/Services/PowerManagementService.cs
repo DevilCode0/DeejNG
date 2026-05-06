@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using DeejNG.Core.Interfaces;
+using MixrU.Core.Interfaces;
 using Microsoft.Win32;
 
-namespace DeejNG.Core.Services
+namespace MixrU.Core.Services
 {
     /// <summary>
     /// Service to handle system power events (sleep, wake, shutdown)

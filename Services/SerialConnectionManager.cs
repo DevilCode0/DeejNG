@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 
-namespace DeejNG.Services
+namespace MixrU.Services
 {
     public class SerialConnectionManager : IDisposable
     {
@@ -330,7 +330,7 @@ namespace DeejNG.Services
         /// Scans all available COM ports and attempts to connect to the first one
         /// that hasn't been marked invalid. Protocol validation (5s timeout) will
         /// automatically mark it invalid and trigger another reconnect cycle if it
-        /// doesn't send valid DeejNG data, causing the next port to be tried.
+        /// doesn't send valid deej protocol data, causing the next port to be tried.
         /// </summary>
         /// <returns>True if a connection attempt was made.</returns>
         public bool TryAutoDetect(int baudRate)
@@ -466,21 +466,21 @@ namespace DeejNG.Services
         }
 
         /// <summary>
-        /// Validates if the received data is valid DeejNG protocol (pipe-delimited numeric values)
+        /// Validates if the received data is valid deej protocol (pipe-delimited numeric values)
         /// Accepts:
         /// - Raw ADC values (0-1023)
         /// - Normalized floats (0.0-1.0)
         /// - Inline mute trigger (9999)
         /// - Button states (10000=OFF, 10001=ON)
         /// </summary>
-        private bool IsValidDeejNGData(string line)
+        private bool IsValidDeejProtocolData(string line)
         {
             if (string.IsNullOrWhiteSpace(line))
                 return false;
 
             var parts = line.Split('|');
 
-            // DeejNG data should have at least one value
+            // deej protocol data should have at least one value
             if (parts.Length == 0)
                 return false;
 
@@ -525,7 +525,7 @@ namespace DeejNG.Services
             // Validate protocol if not yet validated
             if (!_isProtocolValidated)
             {
-                if (IsValidDeejNGData(line))
+                if (IsValidDeejProtocolData(line))
                 {
                     _isProtocolValidated = true;
 
