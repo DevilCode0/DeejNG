@@ -539,6 +539,8 @@ namespace DeejNG
             // Update excluded apps list for unmapped applications feature
             _settingsManager.AppSettings.ExcludedFromUnmapped = newSettings.ExcludedFromUnmapped ?? new List<string>();
 
+            _settingsManager.AppSettings.Language = newSettings.Language;
+
             // Reconfigure button layout if button count changed
             ConfigureButtonLayout();
 
