@@ -52,12 +52,18 @@ namespace MixrU.Dialogs
                     .Select(t => t.Name.ToLowerInvariant()),
                 StringComparer.OrdinalIgnoreCase);
 
-            // Merge VoiceMeeter bus selections into the output set for pre-selection
-            foreach (var name in selectedVmBuses) selectedOutputDevices.Add(name);
+            // Merge VoiceMeeter bus selections into both the output and input sets for
+            // pre-selection: A buses live in the output list, B buses in the input list.
+            // Names are unique per bus, so each only matches its own list entry.
+            foreach (var name in selectedVmBuses)
+            {
+                selectedOutputDevices.Add(name);
+                selectedInputDevices.Add(name);
+            }
 
             // Load and pre-select matching sessions, input devices, and output devices
             LoadSessions(selectedSessions);
-            LoadInputDevices(selectedInputDevices);
+            LoadInputDevices(selectedInputDevices, voiceMeeter);
             LoadOutputDevices(selectedOutputDevices, voiceMeeter);
 
             // Separate manually specified apps (not in sessions/devices) and pre-populate the text box
@@ -149,6 +155,15 @@ namespace MixrU.Dialogs
             Close();
         }
 
+        /// <summary>
+        /// True if a Windows-enumerated endpoint friendly name belongs to a VoiceMeeter virtual
+        /// device (e.g. "Voicemeeter Out A1 (VB-Audio Voicemeeter VAIO)"). These cannot be
+        /// volume-controlled via WASAPI and are redundant with the Remote-API buses.
+        /// </summary>
+        private static bool IsVoiceMeeterVirtualEndpoint(string friendlyName) =>
+            !string.IsNullOrEmpty(friendlyName) &&
+            friendlyName.IndexOf("voicemeeter", System.StringComparison.OrdinalIgnoreCase) >= 0;
+
         private static ImageSource? GetProcessIcon(string exePath)
         {
             try
@@ -193,6 +208,11 @@ namespace MixrU.Dialogs
                 {
                     string name = device.FriendlyName;
 
+                    // When VoiceMeeter integration is enabled, hide the uncontrollable VoiceMeeter
+                    // virtual endpoints; the Remote-API buses below replace them.
+                    if (voiceMeeter != null && IsVoiceMeeterVirtualEndpoint(name))
+                        continue;
+
                     // Wrap each device in a SelectableSession model for UI binding
                     var newDevice = new SelectableSession
                     {
@@ -207,12 +227,17 @@ namespace MixrU.Dialogs
                     OutputDevices.Add(newDevice);
                 }
 
-                // If VoiceMeeter is running, add its buses as selectable output targets
+                // If VoiceMeeter is running, add its A buses (hardware outputs) as selectable
+                // output targets. B buses (virtual outputs) are added to the Input list instead.
                 if (voiceMeeter?.IsAvailable == true)
                 {
                     string[] busLabels = voiceMeeter.GetBusLabels();
                     for (int i = 0; i < busLabels.Length; i++)
                     {
+                        // Only A buses belong in the output list
+                        if (busLabels[i].StartsWith("B", System.StringComparison.OrdinalIgnoreCase))
+                            continue;
+
                         string displayName = $"VoiceMeeter {busLabels[i]}";
                         OutputDevices.Add(new SelectableSession
                         {
@@ -249,7 +274,7 @@ namespace MixrU.Dialogs
         /// wraps them in SelectableSession objects, and pre-selects any that match the provided names.
         /// </summary>
         /// <param name="selectedNames">A set of device names that should be marked as selected.</param>
-        private void LoadInputDevices(HashSet<string> selectedNames)
+        private void LoadInputDevices(HashSet<string> selectedNames, VoiceMeeterService voiceMeeter = null)
         {
             try
             {
@@ -260,6 +285,11 @@ namespace MixrU.Dialogs
                 foreach (var device in devices)
                 {
                     string name = device.FriendlyName;
+
+                    // When VoiceMeeter integration is enabled, hide the uncontrollable VoiceMeeter
+                    // virtual input endpoints.
+                    if (voiceMeeter != null && IsVoiceMeeterVirtualEndpoint(name))
+                        continue;
 
                     // Create a new selectable item representing the input device
                     var newDevice = new SelectableSession
@@ -273,6 +303,31 @@ namespace MixrU.Dialogs
 
                     // Add to the collection of input devices for the UI
                     InputDevices.Add(newDevice);
+                }
+
+                // If VoiceMeeter is running, add its B buses (virtual outputs) as selectable
+                // input targets. A buses (hardware outputs) live in the Output list instead.
+                if (voiceMeeter?.IsAvailable == true)
+                {
+                    string[] busLabels = voiceMeeter.GetBusLabels();
+                    for (int i = 0; i < busLabels.Length; i++)
+                    {
+                        // Only B buses belong in the input list
+                        if (!busLabels[i].StartsWith("B", System.StringComparison.OrdinalIgnoreCase))
+                            continue;
+
+                        string displayName = $"VoiceMeeter {busLabels[i]}";
+                        InputDevices.Add(new SelectableSession
+                        {
+                            Id = displayName,
+                            FriendlyName = displayName,
+                            IsSelected = selectedNames.Contains(displayName.ToLowerInvariant()),
+                            IsInputDevice = true,
+                            IsOutputDevice = false,
+                            IsVoiceMeeterBus = true,
+                            BusIndex = i
+                        });
+                    }
                 }
 
                 // Sort the input devices alphabetically for better UX
@@ -495,12 +550,26 @@ namespace MixrU.Dialogs
             // Add selected input devices (e.g., microphones) to the target list
             foreach (var device in InputDevices.Where(d => d.IsSelected))
             {
-                SelectedTargets.Add(new AudioTarget
+                if (device.IsVoiceMeeterBus)
                 {
-                    Name = device.Id,
-                    IsInputDevice = true,
-                    IsOutputDevice = false
-                });
+                    SelectedTargets.Add(new AudioTarget
+                    {
+                        Name = device.Id,
+                        IsInputDevice = false,
+                        IsOutputDevice = false,
+                        IsVoiceMeeterBus = true,
+                        BusIndex = device.BusIndex
+                    });
+                }
+                else
+                {
+                    SelectedTargets.Add(new AudioTarget
+                    {
+                        Name = device.Id,
+                        IsInputDevice = true,
+                        IsOutputDevice = false
+                    });
+                }
             }
 
             // Add selected output devices (e.g., speakers, headphones) to the target list

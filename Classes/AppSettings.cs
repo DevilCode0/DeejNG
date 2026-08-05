@@ -86,6 +86,13 @@ namespace MixrU.Classes
         public bool VuMeters { get; set; } = true;
 
         /// <summary>
+        /// Gets or sets a value indicating whether VoiceMeeter integration is enabled.
+        /// When false, VoiceMeeter buses are hidden from the target picker and the
+        /// volume-apply loop never calls the VoiceMeeter Remote API.
+        /// </summary>
+        public bool VoiceMeeterEnabled { get; set; } = true;
+
+        /// <summary>
         /// Gets or sets a value indicating whether the overlay is enabled.
         /// </summary>
         public bool OverlayEnabled { get; set; } = false;

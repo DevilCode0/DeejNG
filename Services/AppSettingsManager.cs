@@ -129,6 +129,7 @@ namespace MixrU.Services
                 IsDarkTheme = isDarkTheme,
                 IsSliderInverted = isSliderInverted,
                 VuMeters = vuMeters,
+                VoiceMeeterEnabled = AppSettings.VoiceMeeterEnabled,
                 StartOnBoot = startOnBoot,
                 StartMinimized = startMinimized,
                 DisableSmoothing = disableSmoothing,

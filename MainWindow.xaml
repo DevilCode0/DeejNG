@@ -193,6 +193,13 @@
                               Style="{StaticResource SwitchToggleStyle}"
                               Checked="DisableSmoothingCheckBox_Checked"
                               Unchecked="DisableSmoothingCheckBox_Unchecked"/>
+
+                <ToggleButton x:Name="VoiceMeeterEnabledCheckBox"
+                              Content="Enable VoiceMeeter"
+                              IsChecked="True"
+                              Style="{StaticResource SwitchToggleStyle}"
+                              Checked="VoiceMeeterEnabledCheckBox_Checked"
+                              Unchecked="VoiceMeeterEnabledCheckBox_Unchecked"/>
             </StackPanel>
         </Border>
 

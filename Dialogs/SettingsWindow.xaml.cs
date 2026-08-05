@@ -67,6 +67,7 @@ namespace MixrU.Dialogs
                 SettingStartMinimized.IsChecked = _mainWindow.StartMinimizedCheckBox.IsChecked;
                 SettingDisableSmoothing.IsChecked = _mainWindow.DisableSmoothingCheckBox.IsChecked;
                 SettingUseExponentialVolume.IsChecked = _mainWindow.UseExponentialVolumeCheckBox.IsChecked;
+                SettingVoiceMeeterEnabled.IsChecked = _mainWindow.VoiceMeeterEnabledCheckBox.IsChecked;
                 ExponentialVolumeFactorSlider.Value = _mainWindow.ExponentialVolumeFactorSlider.Value;
 
                 // Initialize COM port controls - enumerate ports and sync from settings
@@ -118,6 +119,8 @@ namespace MixrU.Dialogs
             SettingDisableSmoothing.Unchecked += ForwardGeneralCheckbox;
             SettingUseExponentialVolume.Checked += ForwardGeneralCheckbox;
             SettingUseExponentialVolume.Unchecked += ForwardGeneralCheckbox;
+            SettingVoiceMeeterEnabled.Checked += ForwardGeneralCheckbox;
+            SettingVoiceMeeterEnabled.Unchecked += ForwardGeneralCheckbox;
             ExponentialVolumeFactorSlider.ValueChanged += ForwardGeneralSlider;
 
             // Wire COM port selection changes
@@ -238,6 +241,8 @@ namespace MixrU.Dialogs
                 _mainWindow.DisableSmoothingCheckBox.IsChecked = SettingDisableSmoothing.IsChecked;
             else if (sender == SettingUseExponentialVolume)
                 _mainWindow.UseExponentialVolumeCheckBox.IsChecked = SettingUseExponentialVolume.IsChecked;
+            else if (sender == SettingVoiceMeeterEnabled)
+                _mainWindow.VoiceMeeterEnabledCheckBox.IsChecked = SettingVoiceMeeterEnabled.IsChecked;
         }
 
         private void ForwardGeneralSlider(object sender, RoutedPropertyChangedEventArgs<double> e)

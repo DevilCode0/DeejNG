@@ -35,8 +35,13 @@ namespace MixrU
 
         public List<ChannelControl> _channelControls = new();
 
-        /// <summary>Exposes VoiceMeeter service for dialogs opened by child controls.</summary>
-        public VoiceMeeterService VoiceMeeter => _voiceMeeter;
+        /// <summary>
+        /// Exposes VoiceMeeter service for dialogs opened by child controls.
+        /// Returns null when VoiceMeeter integration is disabled, which hides its buses
+        /// from the target picker.
+        /// </summary>
+        public VoiceMeeterService VoiceMeeter =>
+            (VoiceMeeterEnabledCheckBox?.IsChecked == true) ? _voiceMeeter : null;
 
         #endregion Public Fields
 
@@ -730,8 +735,11 @@ namespace MixrU
                 {
                     if (target.IsVoiceMeeterBus)
                     {
-                        _voiceMeeter.SetBusGain(target.BusIndex, level);
-                        _voiceMeeter.SetBusMute(target.BusIndex, ctrl.IsMuted);
+                        if (VoiceMeeterEnabledCheckBox?.IsChecked == true)
+                        {
+                            _voiceMeeter.SetBusGain(target.BusIndex, level);
+                            _voiceMeeter.SetBusMute(target.BusIndex, ctrl.IsMuted);
+                        }
                     }
                     else if (target.IsInputDevice)
                     {
@@ -1767,6 +1775,7 @@ namespace MixrU
                 }
                 InvertSliderCheckBox.IsChecked = settings.IsSliderInverted;
                 ShowSlidersCheckBox.IsChecked = settings.VuMeters;
+                VoiceMeeterEnabledCheckBox.IsChecked = settings.VoiceMeeterEnabled;
 
                 SetMeterVisibilityForAll(settings.VuMeters);
                 DisableSmoothingCheckBox.IsChecked = settings.DisableSmoothing;
@@ -2246,6 +2255,9 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                     _settingsManager.AppSettings.BaudRate > 0 ? _settingsManager.AppSettings.BaudRate : _serialManager.CurrentBaudRate
                 );
 
+                // Persist the VoiceMeeter enable/disable toggle from its (hidden) checkbox
+                settings.VoiceMeeterEnabled = VoiceMeeterEnabledCheckBox.IsChecked ?? true;
+
                 // Update active profile and save to profiles.json
                 _profileManager.UpdateActiveProfileSettings(settings);
                 _profileManager.SaveProfiles();
@@ -2455,6 +2467,20 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
             foreach (var ctrl in _channelControls)
                 ctrl.SetMeterVisibility(false);
             SetMeterVisibilityForAll(false);
+            SaveSettings();
+        }
+
+        private void VoiceMeeterEnabledCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            // The VoiceMeeter property getter and apply loop read this checkbox live,
+            // so no extra apply work is needed — just persist the change.
+            if (_isInitializing) return;
+            SaveSettings();
+        }
+
+        private void VoiceMeeterEnabledCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (_isInitializing) return;
             SaveSettings();
         }
 

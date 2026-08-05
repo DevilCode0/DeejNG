@@ -88,6 +88,7 @@
     <sys:String x:Key="Str_Settings_StartMinimized">البدء مصغّراً</sys:String>
     <sys:String x:Key="Str_Settings_DisableSmoothing">تعطيل التنعيم</sys:String>
     <sys:String x:Key="Str_Settings_UseExpVolume">استخدام منحنى الصوت الأسّي</sys:String>
+    <sys:String x:Key="Str_Settings_EnableVoiceMeeter">تفعيل VoiceMeeter</sys:String>
     <sys:String x:Key="Str_Settings_ExpFactor">معامل الحجم الأسّي</sys:String>
     <sys:String x:Key="Str_Settings_ComPort">منفذ COM:</sys:String>
     <sys:String x:Key="Str_Settings_BaudRate">معدل الباود:</sys:String>
