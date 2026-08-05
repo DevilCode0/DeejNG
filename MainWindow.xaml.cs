@@ -648,11 +648,22 @@ namespace MixrU
                 // Only hide the window and show the NotifyIcon when minimized
                 this.Hide();
                 MyNotifyIcon.Visibility = Visibility.Visible;
+
+                // Nothing is visible while minimized, so stop the VU meter timer to
+                // avoid running audio enumeration/peak reads 40x/second in the background.
+                _timerCoordinator?.StopMeters();
             }
             else
             {
                 // Ensure the NotifyIcon is hidden when the window is not minimized
                 MyNotifyIcon.Visibility = Visibility.Collapsed;
+
+                // Restore the meter timer when the window is shown again, but only if
+                // the "Show Meters" setting is enabled and it isn't already running.
+                if (_metersEnabled && _timerCoordinator != null && !_timerCoordinator.IsMetersRunning)
+                {
+                    _timerCoordinator.StartMeters();
+                }
             }
 
             base.OnStateChanged(e);
