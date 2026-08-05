@@ -1881,6 +1881,31 @@ namespace MixrU
 
 private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 
+        /// <summary>
+        /// Restores and brings the window to the foreground. Called when a second
+        /// instance of the application is launched.
+        /// </summary>
+        public void RestoreAndActivate()
+        {
+            if (!this.IsVisible)
+            {
+                this.Show();
+            }
+
+            if (this.WindowState == WindowState.Minimized)
+            {
+                this.WindowState = WindowState.Normal;
+            }
+
+            this.Activate();
+
+            var handle = new WindowInteropHelper(this).Handle;
+            if (handle != IntPtr.Zero)
+            {
+                SetForegroundWindow(handle);
+            }
+        }
+
         private void MyNotifyIcon_Click(object sender, EventArgs e)
         {
             if (this.WindowState == WindowState.Minimized)

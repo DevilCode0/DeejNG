@@ -4,6 +4,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
+using System.Threading;
 using System.Windows;
 
 namespace MixrU
@@ -13,9 +14,47 @@ namespace MixrU
     /// </summary>
     public partial class App : Application
     {
+        private const string SingleInstanceMutexName = "MixrU_SingleInstance_Mutex";
+        private const string ActivateEventName = "MixrU_SingleInstance_Activate";
+
+        private static Mutex _singleInstanceMutex;
+        private static EventWaitHandle _activateEvent;
+        private RegisteredWaitHandle _activateWaitHandle;
+        private bool _ownsSingleInstanceMutex;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            _singleInstanceMutex = new Mutex(true, SingleInstanceMutexName, out bool createdNew);
+            _ownsSingleInstanceMutex = createdNew;
+            if (!createdNew)
+            {
+                // Another instance is already running - ask it to restore itself and exit.
+                try
+                {
+                    using var existingEvent = EventWaitHandle.OpenExisting(ActivateEventName);
+                    existingEvent.Set();
+                }
+                catch { }
+
+                Shutdown();
+                return;
+            }
+
+            _activateEvent = new EventWaitHandle(false, EventResetMode.AutoReset, ActivateEventName);
+            _activateWaitHandle = ThreadPool.RegisterWaitForSingleObject(
+                _activateEvent,
+                (state, timedOut) =>
+                {
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        (Current?.MainWindow as MainWindow)?.RestoreAndActivate();
+                    });
+                },
+                null,
+                Timeout.Infinite,
+                false);
 
             ServiceLocator.Configure();
 
@@ -53,6 +92,15 @@ namespace MixrU
         {
             // Cleanup services
             ServiceLocator.Dispose();
+
+            _activateWaitHandle?.Unregister(null);
+            _activateEvent?.Dispose();
+            if (_ownsSingleInstanceMutex)
+            {
+                _singleInstanceMutex?.ReleaseMutex();
+            }
+            _singleInstanceMutex?.Dispose();
+
             base.OnExit(e);
         }
     }
