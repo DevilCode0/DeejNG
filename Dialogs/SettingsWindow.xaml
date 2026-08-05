@@ -122,16 +122,6 @@
                                           DropDownOpened="SettingComPortSelector_DropDownOpened"/>
                                 <Button x:Name="SettingConnectButton" Content="{DynamicResource Str_Btn_Connect}" Style="{StaticResource ModernButton}" Click="SettingConnect_Click"/>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{DynamicResource Str_Settings_BaudRate}" Style="{StaticResource LabelTextBlock}" VerticalAlignment="Center" Width="80"/>
-                                <ComboBox x:Name="BaudRateComboBox" Width="160" Style="{StaticResource ModernComboBox}">
-                                    <ComboBoxItem Content="9600"/>
-                                    <ComboBoxItem Content="19200"/>
-                                    <ComboBoxItem Content="38400"/>
-                                    <ComboBoxItem Content="57600"/>
-                                    <ComboBoxItem Content="115200"/>
-                                </ComboBox>
-                            </StackPanel>
                         </StackPanel>
                     </Border>
                 </StackPanel>

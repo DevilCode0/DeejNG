@@ -119,8 +119,7 @@ namespace MixrU.Services
                     bool startMinimized,
                     bool disableSmoothing,
                     bool exponentialVolume,
-                    float exponentialVolumeFactor,
-                    int baudRate)
+                    float exponentialVolumeFactor)
         {
             return new AppSettings
             {
@@ -135,7 +134,6 @@ namespace MixrU.Services
                 DisableSmoothing = disableSmoothing,
                 UseExponentialVolume = exponentialVolume,
                 ExponentialVolumeFactor = exponentialVolumeFactor,
-                BaudRate = baudRate,
 
                 // Preserve overlay settings from current settings
                 OverlayEnabled = AppSettings.OverlayEnabled,

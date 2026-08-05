@@ -87,9 +87,6 @@ namespace MixrU.Dialogs
 
                 UpdateConnectButtonState();
 
-                // Initialize baud rate from settings
-                InitializeBaudRateSelection();
-
                 // Initialize exclusion list from settings
                 InitializeExcludedAppsList();
             }
@@ -294,28 +291,6 @@ namespace MixrU.Dialogs
         }
 
         /// <summary>
-        /// Helper to select the baud rate option matching AppSettings.BaudRate, defaulting to 9600 if not set.
-        /// </summary>
-        private void InitializeBaudRateSelection()
-        {
-            int baud = _settings?.BaudRate > 0 ? _settings.BaudRate : 9600;
-            foreach (ComboBoxItem item in BaudRateComboBox.Items)
-            {
-                if (int.TryParse(item.Content?.ToString(), out int value) && value == baud)
-                {
-                    BaudRateComboBox.SelectedItem = item;
-                    return;
-                }
-            }
-
-            // Fallback to first item if no match
-            if (BaudRateComboBox.Items.Count > 0)
-            {
-                BaudRateComboBox.SelectedIndex = 0;
-            }
-        }
-
-        /// <summary>
         /// Loads settings from disk. Returns defaults if file is missing or corrupt.
         /// </summary>
         private AppSettings LoadSettings()
@@ -420,22 +395,15 @@ namespace MixrU.Dialogs
 
             // Save selected language
             _settings.Language = GetLanguageFromSelection();
-            if (BaudRateComboBox.SelectedItem is ComboBoxItem item &&
-                int.TryParse(item.Content?.ToString(), out int baud))
-            {
-                _settings.BaudRate = baud;
-            }
 
             // Save excluded apps list
             _settings.ExcludedFromUnmapped = ExcludedAppsListBox.Items.Cast<string>().ToList();
 
-            // Handle COM port change - use the saved baud rate
+            // Handle COM port change
             if (_mainWindow != null && SettingComPortSelector.SelectedItem is string selectedPort)
             {
-                int baudRate = _settings.BaudRate > 0 ? _settings.BaudRate : 9600;
-
                 // This will handle disconnect/reconnect automatically
-                _mainWindow.UpdateComPort(selectedPort, baudRate);
+                _mainWindow.UpdateComPort(selectedPort);
             }
 
             try
@@ -539,21 +507,6 @@ namespace MixrU.Dialogs
         {
             if (_mainWindow != null)
             {
-                // Update baud rate in settings before forwarding connect
-                if (BaudRateComboBox.SelectedItem is ComboBoxItem item &&
-                    int.TryParse(item.Content?.ToString(), out int baud))
-                {
-                    _settings.BaudRate = baud;
-
-                    // BUGFIX: Update MainWindow's AppSettings BEFORE triggering connect
-                    // This ensures the connection uses the newly selected baud rate
-                    var currentSettings = _mainWindow.GetCurrentSettings();
-                    currentSettings.BaudRate = baud;
-                    _mainWindow.UpdateOverlaySettings(currentSettings);
-
-
-                }
-
                 // Forward the click to the main window's connect button
                 _mainWindow.ConnectButton.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
                 UpdateConnectButtonState();

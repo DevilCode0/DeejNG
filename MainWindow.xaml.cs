@@ -467,14 +467,13 @@ namespace MixrU
         /// <summary>
         /// Updates COM port and automatically switches connection if needed.
         /// </summary>
-        public void UpdateComPort(string newPort, int baudRate)
+        public void UpdateComPort(string newPort)
         {
             if (string.IsNullOrEmpty(newPort)) return;
 
 
             // Update settings immediately
             _settingsManager.AppSettings.PortName = newPort;
-            _settingsManager.AppSettings.BaudRate = baudRate;
             SaveSettings();
 
             // Update UI selector immediately (before async operations)
@@ -501,7 +500,7 @@ namespace MixrU
                     reconnectTimer.Stop();
 
 
-                    _serialManager.InitSerial(newPort, baudRate);
+                    _serialManager.InitSerial(newPort);
                 };
                 reconnectTimer.Tick += reconnectHandler;
                 reconnectTimer.Start();
@@ -510,7 +509,7 @@ namespace MixrU
             else if (!_serialManager.IsConnected && !_isInitializing)
             {
 
-                _serialManager.InitSerial(newPort, baudRate);
+                _serialManager.InitSerial(newPort);
             }
         }
 
@@ -536,10 +535,6 @@ namespace MixrU
             // Update button configuration
             _settingsManager.AppSettings.NumberOfButtons = newSettings.NumberOfButtons;
             _settingsManager.AppSettings.ButtonMappings = newSettings.ButtonMappings;
-
-            // BUGFIX: Update baud rate from SettingsWindow
-            // This ensures baud rate changes from the UI are persisted
-            _settingsManager.AppSettings.BaudRate = newSettings.BaudRate;
 
             // Update excluded apps list for unmapped applications feature
             _settingsManager.AppSettings.ExcludedFromUnmapped = newSettings.ExcludedFromUnmapped ?? new List<string>();
@@ -922,13 +917,7 @@ namespace MixrU
                             reconnectTimer.Tick -= reconnectHandler;
                             reconnectTimer.Stop();
 
-                            // Connect to new port with saved baud rate
-                            int baud = _settingsManager.AppSettings.BaudRate > 0
-                                ? _settingsManager.AppSettings.BaudRate
-                                : 9600;
-
-
-                            _serialManager.InitSerial(selectedPort, baud);
+                            _serialManager.InitSerial(selectedPort);
                         };
                         reconnectTimer.Tick += reconnectHandler;
                         reconnectTimer.Start();
@@ -937,11 +926,7 @@ namespace MixrU
                     else if (!isCurrentlyConnected && !_isInitializing)
                     {
 
-                        int baud = _settingsManager.AppSettings.BaudRate > 0
-                            ? _settingsManager.AppSettings.BaudRate
-                            : 9600;
-
-                        _serialManager.InitSerial(selectedPort, baud);
+                        _serialManager.InitSerial(selectedPort);
                     }
                 }
             }
@@ -983,11 +968,6 @@ namespace MixrU
                 {
 
 
-                    // Use the last saved baud rate if available, otherwise default to 9600
-                    int baud = _settingsManager.AppSettings.BaudRate > 0
-                        ? _settingsManager.AppSettings.BaudRate
-                        : 9600;
-
                     // Update button state immediately
                     ConnectButton.IsEnabled = false;
                     ConnectButton.Content = LocalizationManager.L("Str_Btn_Connecting");
@@ -996,7 +976,7 @@ namespace MixrU
                     _timerCoordinator.StopSerialReconnect();
 
                     // Try connection
-                    _serialManager.InitSerial(selectedPort, baud);
+                    _serialManager.InitSerial(selectedPort);
 
                     // Reset button after short delay
                     var resetTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
@@ -2249,10 +2229,7 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                     StartMinimizedCheckBox.IsChecked ?? false,
                     DisableSmoothingCheckBox.IsChecked ?? false,
                     UseExponentialVolumeCheckBox.IsChecked ?? false,
-                    (float)ExponentialVolumeFactorSlider.Value,
-                    // BUGFIX: Use baud rate from AppSettings instead of CurrentBaudRate
-                    // This ensures user's baud rate selection is preserved even if not connected
-                    _settingsManager.AppSettings.BaudRate > 0 ? _settingsManager.AppSettings.BaudRate : _serialManager.CurrentBaudRate
+                    (float)ExponentialVolumeFactorSlider.Value
                 );
 
                 // Persist the VoiceMeeter enable/disable toggle from its (hidden) checkbox
@@ -2290,9 +2267,7 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                 ConnectionStatus.Foreground = Brushes.Orange;
             }, DispatcherPriority.Background);
 
-            if (_serialManager.TryConnectToSavedPort(
-                _settingsManager.AppSettings.PortName,
-                _settingsManager.AppSettings.BaudRate > 0 ? _settingsManager.AppSettings.BaudRate : 9600))
+            if (_serialManager.TryConnectToSavedPort(_settingsManager.AppSettings.PortName))
             {
 
                 return; // The Connected event will stop the timer
@@ -2314,8 +2289,7 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                     return;
                 }
 
-                int baudRate = _settingsManager.AppSettings.BaudRate > 0 ? _settingsManager.AppSettings.BaudRate : 9600;
-                if (_serialManager.TryAutoDetect(baudRate))
+                if (_serialManager.TryAutoDetect())
                 {
                     Dispatcher.BeginInvoke(() =>
                     {
@@ -2398,10 +2372,8 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
             attemptTimer.Tick += (s, e) =>
             {
                 connectionAttempts++;
-                int baudRate = _settingsManager.AppSettings.BaudRate > 0 ? _settingsManager.AppSettings.BaudRate : 9600;
 
-
-                if (_serialManager.TryConnectToSavedPort(_settingsManager.AppSettings.PortName, baudRate))
+                if (_serialManager.TryConnectToSavedPort(_settingsManager.AppSettings.PortName))
                 {
                     attemptTimer.Stop();
                     Dispatcher.BeginInvoke(() => UpdateConnectionStatus(), DispatcherPriority.Background);
@@ -2409,7 +2381,7 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
                 }
 
                 // Saved port not found — try auto-detecting any available MixrU device
-                if (_serialManager.TryAutoDetect(baudRate))
+                if (_serialManager.TryAutoDetect())
                 {
                     attemptTimer.Stop();
                     Dispatcher.BeginInvoke(() =>
@@ -3077,17 +3049,14 @@ private void MinButton_Click(object sender, RoutedEventArgs e) => WindowState = 
             RescanButton.IsEnabled = false;
             RescanButton.Content = LocalizationManager.L("Str_Btn_Scanning");
 
-            int baud = _settingsManager.AppSettings.BaudRate > 0
-                ? _settingsManager.AppSettings.BaudRate : 9600;
-
             try
             {
                 _serialManager.ClearInvalidPorts();
                 LoadAvailablePorts();
 
                 bool success =
-                    _serialManager.TryConnectToSavedPort(_settingsManager.AppSettings.PortName, baud)
-                    || _serialManager.TryAutoDetect(baud);
+                    _serialManager.TryConnectToSavedPort(_settingsManager.AppSettings.PortName)
+                    || _serialManager.TryAutoDetect();
 
                 if (!success)
                 {

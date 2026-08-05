@@ -23,7 +23,13 @@ namespace MixrU.Services
         private static readonly TimeSpan InvalidPortsRetryInterval = TimeSpan.FromMinutes(2);
         private static readonly TimeSpan ValidationTimeout = TimeSpan.FromSeconds(5);
         private static readonly TimeSpan WatchdogQuietThreshold = TimeSpan.FromSeconds(5);
-        private int _baudRate = 0;
+
+        /// <summary>
+        /// The fixed baud rate used for all serial connections. MixrU hardware always
+        /// communicates at 9600, so this is hardcoded rather than user-configurable.
+        /// </summary>
+        public const int DefaultBaudRate = 9600;
+
         private bool[] _buttonStates = Array.Empty<bool>();
         // Track current button states
         private bool _buttonStatesInitialized = false;
@@ -70,7 +76,7 @@ namespace MixrU.Services
 
         #region Public Properties
 
-        public int CurrentBaudRate => _baudRate > 0 ? _baudRate : 9600;
+        public int CurrentBaudRate => DefaultBaudRate;
         public string CurrentPort => _serialPort?.PortName ?? string.Empty;
         public bool IsConnected => _isConnected && !_serialDisconnected;
         public bool IsFullyInitialized => _serialPortFullyInitialized;
@@ -206,11 +212,10 @@ namespace MixrU.Services
             ClosePort();
         }
 
-        public void InitSerial(string portName, int baudRate)
+        public void InitSerial(string portName)
         {
             try
             {
-                _baudRate = baudRate;
                 if (string.IsNullOrWhiteSpace(portName))
                 {
 
@@ -237,8 +242,7 @@ namespace MixrU.Services
 
                 ClosePort();
 
-                _baudRate = baudRate;
-                _serialPort = new SerialPort(portName, baudRate)
+                _serialPort = new SerialPort(portName, DefaultBaudRate)
                 {
                     ReadTimeout = 1000,
                     WriteTimeout = 1000,
@@ -333,7 +337,7 @@ namespace MixrU.Services
         /// doesn't send valid deej protocol data, causing the next port to be tried.
         /// </summary>
         /// <returns>True if a connection attempt was made.</returns>
-        public bool TryAutoDetect(int baudRate)
+        public bool TryAutoDetect()
         {
             if (IsConnected) return true;
 
@@ -344,7 +348,7 @@ namespace MixrU.Services
             {
                 if (!IsPortMarkedInvalid(port))
                 {
-                    InitSerial(port, baudRate);
+                    InitSerial(port);
                     return IsConnected;
                 }
             }
@@ -352,13 +356,11 @@ namespace MixrU.Services
             return false;
         }
 
-        public bool TryConnectToSavedPort(string savedPortName, int baudRate)
+        public bool TryConnectToSavedPort(string savedPortName)
         {
             if (string.IsNullOrWhiteSpace(savedPortName))
                 return false;
 
-            // Optionally update internal field
-            _baudRate = baudRate;
             try
             {
                 if (IsConnected) return true;
@@ -385,8 +387,7 @@ namespace MixrU.Services
                     return false;
                 }
 
-                // Reuse last configured baud rate; default to 9600 if unknown.
-                InitSerial(portToTry, _baudRate > 0 ? _baudRate : 9600);
+                InitSerial(portToTry);
 
                 if (IsConnected) _userSelectedPort = string.Empty;
                 return IsConnected;
